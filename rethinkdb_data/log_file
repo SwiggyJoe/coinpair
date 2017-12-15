@@ -1,0 +1,101 @@
+2017-12-01T16:16:57.064732000 0.493142s notice: Recursively removing directory /Applications/XAMPP/xamppfiles/htdocs/node/coinpair/rethinkdb_data/tmp
+2017-12-01T16:16:57.067521000 0.495939s notice: Initializing directory /Applications/XAMPP/xamppfiles/htdocs/node/coinpair/rethinkdb_data
+2017-12-01T16:16:57.067770000 0.496179s info: Creating a default database for your convenience. (This is because you ran 'rethinkdb' without 'create', 'serve', or '--join', and the directory '/Applications/XAMPP/xamppfiles/htdocs/node/coinpair/rethinkdb_data' did not already exist or is empty.)
+2017-12-01T16:16:57.067909000 0.496319s notice: Running rethinkdb 2.3.6 (CLANG 8.1.0 (clang-802.0.42))...
+2017-12-01T16:16:57.104005000 0.532416s notice: Running on Darwin 15.2.0 x86_64
+2017-12-01T16:16:57.104072000 0.532481s notice: Loading data from directory /Applications/XAMPP/xamppfiles/htdocs/node/coinpair/rethinkdb_data
+2017-12-01T16:16:57.274841000 0.703250s info: Automatically using cache size of 100 MB
+2017-12-01T16:16:57.274855000 0.703263s warn: Cache size does not leave much memory for server and query overhead (available memory: 943 MB).
+2017-12-01T16:16:57.274862000 0.703271s warn: Cache size is very low and may impact performance.
+2017-12-01T16:16:57.278986000 0.707395s notice: Listening for intracluster connections on port 29015
+2017-12-01T16:16:57.281990000 0.710399s notice: Listening for client driver connections on port 28015
+2017-12-01T16:16:57.282134000 0.710543s notice: Listening for administrative HTTP connections on port 8080
+2017-12-01T16:16:57.282137000 0.710546s notice: Listening on cluster addresses: 127.0.0.1, ::1
+2017-12-01T16:16:57.282144000 0.710552s notice: Listening on driver addresses: 127.0.0.1, ::1
+2017-12-01T16:16:57.282146000 0.710555s notice: Listening on http addresses: 127.0.0.1, ::1
+2017-12-01T16:16:57.282151000 0.710560s notice: To fully expose RethinkDB on the network, bind to all addresses by running rethinkdb with the `--bind all` command line option.
+2017-12-01T16:16:57.282156000 0.710564s notice: Server ready, "Leons_Air_2_fritz_box_rho" 64cd372a-bb78-410c-a75c-1aed90368888
+2017-12-01T16:17:53.762782000 57.192803s notice: Server got SIGINT from pid 37488, uid 501; shutting down...
+2017-12-01T16:17:53.765191000 57.195212s notice: Shutting down client connections...
+2017-12-01T16:17:53.765815000 57.195835s notice: All client connections closed.
+2017-12-01T16:17:53.765825000 57.195845s notice: Shutting down storage engine... (This may take a while if you had a lot of unflushed data in the writeback cache.)
+2017-12-01T16:17:53.773417000 57.203438s notice: Storage engine shut down.
+2017-12-01T16:18:03.419720000 0.965861s notice: Running rethinkdb 2.3.6 (CLANG 8.1.0 (clang-802.0.42))...
+2017-12-01T16:18:03.444900000 0.991037s notice: Running on Darwin 15.2.0 x86_64
+2017-12-01T16:18:03.444983000 0.991119s notice: Loading data from directory /Applications/XAMPP/xamppfiles/htdocs/node/coinpair/rethinkdb_data
+2017-12-01T16:18:03.492766000 1.038902s info: Automatically using cache size of 100 MB
+2017-12-01T16:18:03.492781000 1.038916s warn: Cache size does not leave much memory for server and query overhead (available memory: 964 MB).
+2017-12-01T16:18:03.492844000 1.038980s warn: Cache size is very low and may impact performance.
+2017-12-01T16:18:03.494137000 1.040273s notice: Listening for intracluster connections on port 29015
+2017-12-01T16:18:03.495896000 1.042032s notice: Listening for client driver connections on port 28015
+2017-12-01T16:18:03.496108000 1.042244s notice: Listening for administrative HTTP connections on port 8080
+2017-12-01T16:18:03.496112000 1.042248s notice: Listening on cluster addresses: 127.0.0.1, ::1
+2017-12-01T16:18:03.496120000 1.042256s notice: Listening on driver addresses: 127.0.0.1, ::1
+2017-12-01T16:18:03.496124000 1.042259s notice: Listening on http addresses: 127.0.0.1, ::1
+2017-12-01T16:18:03.496131000 1.042266s notice: To fully expose RethinkDB on the network, bind to all addresses by running rethinkdb with the `--bind all` command line option.
+2017-12-01T16:18:03.496139000 1.042275s notice: Server ready, "Leons_Air_2_fritz_box_rho" 64cd372a-bb78-410c-a75c-1aed90368888
+2017-12-01T16:21:38.618098000 216.806689s info: Table 000a41bb-3e75-4318-b3e1-4c19a1d637f4: Starting a new Raft election for term 1.
+2017-12-01T16:21:38.619903000 216.808495s info: Table 000a41bb-3e75-4318-b3e1-4c19a1d637f4: Added replica on this server.
+2017-12-01T16:21:38.630976000 216.819568s info: Table 000a41bb-3e75-4318-b3e1-4c19a1d637f4: This server is Raft leader for term 1. Latest log index is 0.
+2017-12-04T00:13:24.770417000 76698.966715s notice: Server got SIGINT from pid 37488, uid 501; shutting down...
+2017-12-04T00:13:24.809727000 76699.006023s notice: Shutting down client connections...
+2017-12-04T00:13:24.835733000 76699.032029s notice: All client connections closed.
+2017-12-04T00:13:24.835819000 76699.032115s notice: Shutting down storage engine... (This may take a while if you had a lot of unflushed data in the writeback cache.)
+2017-12-04T00:13:24.981341000 76699.177637s notice: Storage engine shut down.
+2017-12-04T20:48:25.833166000 0.456033s notice: Running rethinkdb 2.3.6 (CLANG 8.1.0 (clang-802.0.42))...
+2017-12-04T20:48:25.859025000 0.481889s notice: Running on Darwin 15.2.0 x86_64
+2017-12-04T20:48:25.859091000 0.481954s notice: Loading data from directory /Applications/XAMPP/xamppfiles/htdocs/node/coinpair/rethinkdb_data
+2017-12-04T20:48:25.887478000 0.510342s info: Automatically using cache size of 100 MB
+2017-12-04T20:48:25.887501000 0.510363s warn: Cache size is very low and may impact performance.
+2017-12-04T20:48:25.889479000 0.512342s notice: Listening for intracluster connections on port 29015
+2017-12-04T20:48:25.911093000 0.533956s notice: Listening for client driver connections on port 28015
+2017-12-04T20:48:25.911367000 0.534230s notice: Listening for administrative HTTP connections on port 8080
+2017-12-04T20:48:25.911372000 0.534235s notice: Listening on cluster addresses: 127.0.0.1, ::1
+2017-12-04T20:48:25.911376000 0.534238s notice: Listening on driver addresses: 127.0.0.1, ::1
+2017-12-04T20:48:25.911379000 0.534242s notice: Listening on http addresses: 127.0.0.1, ::1
+2017-12-04T20:48:25.911550000 0.534413s notice: To fully expose RethinkDB on the network, bind to all addresses by running rethinkdb with the `--bind all` command line option.
+2017-12-04T20:48:25.911555000 0.534418s notice: Server ready, "Leons_Air_2_fritz_box_rho" 64cd372a-bb78-410c-a75c-1aed90368888
+2017-12-04T20:48:27.554695000 2.177593s info: Table 000a41bb-3e75-4318-b3e1-4c19a1d637f4: Starting a new Raft election for term 2.
+2017-12-04T20:48:27.570269000 2.193166s info: Table 000a41bb-3e75-4318-b3e1-4c19a1d637f4: This server is Raft leader for term 2. Latest log index is 3.
+2017-12-04T20:48:35.906709000 10.529777s notice: Server got SIGINT from pid 37488, uid 501; shutting down...
+2017-12-04T20:48:35.906886000 10.529954s notice: Shutting down client connections...
+2017-12-04T20:48:35.907035000 10.530103s notice: All client connections closed.
+2017-12-04T20:48:35.907045000 10.530113s notice: Shutting down storage engine... (This may take a while if you had a lot of unflushed data in the writeback cache.)
+2017-12-04T20:48:35.912160000 10.535228s notice: Storage engine shut down.
+2017-12-05T18:53:53.406037000 0.465383s notice: Running rethinkdb 2.3.6 (CLANG 8.1.0 (clang-802.0.42))...
+2017-12-05T18:53:53.416364000 0.475707s notice: Running on Darwin 15.2.0 x86_64
+2017-12-05T18:53:53.416428000 0.475770s notice: Loading data from directory /Applications/XAMPP/xamppfiles/htdocs/node/coinpair/rethinkdb_data
+2017-12-05T18:53:53.459600000 0.518942s info: Automatically using cache size of 100 MB
+2017-12-05T18:53:53.459612000 0.518953s warn: Cache size does not leave much memory for server and query overhead (available memory: 1014 MB).
+2017-12-05T18:53:53.459630000 0.518971s warn: Cache size is very low and may impact performance.
+2017-12-05T18:53:53.461839000 0.521181s notice: Listening for intracluster connections on port 29015
+2017-12-05T18:53:53.491042000 0.550384s notice: Listening for client driver connections on port 28015
+2017-12-05T18:53:53.491340000 0.550681s notice: Listening for administrative HTTP connections on port 8080
+2017-12-05T18:53:53.491345000 0.550686s notice: Listening on cluster addresses: 127.0.0.1, ::1
+2017-12-05T18:53:53.491349000 0.550690s notice: Listening on driver addresses: 127.0.0.1, ::1
+2017-12-05T18:53:53.491364000 0.550705s notice: Listening on http addresses: 127.0.0.1, ::1
+2017-12-05T18:53:53.491367000 0.550708s notice: To fully expose RethinkDB on the network, bind to all addresses by running rethinkdb with the `--bind all` command line option.
+2017-12-05T18:53:53.491371000 0.550712s notice: Server ready, "Leons_Air_2_fritz_box_rho" 64cd372a-bb78-410c-a75c-1aed90368888
+2017-12-05T18:53:55.173448000 2.232828s info: Table 000a41bb-3e75-4318-b3e1-4c19a1d637f4: Starting a new Raft election for term 3.
+2017-12-05T18:53:55.185185000 2.244565s info: Table 000a41bb-3e75-4318-b3e1-4c19a1d637f4: This server is Raft leader for term 3. Latest log index is 6.
+2017-12-10T00:25:29.435115000 132094.164347s notice: Server got SIGINT from pid 37488, uid 501; shutting down...
+2017-12-10T00:25:29.445270000 132094.174498s notice: Shutting down client connections...
+2017-12-10T00:25:29.448237000 132094.177502s notice: All client connections closed.
+2017-12-10T00:25:29.448245000 132094.177509s notice: Shutting down storage engine... (This may take a while if you had a lot of unflushed data in the writeback cache.)
+2017-12-10T00:25:29.500181000 132094.229446s notice: Storage engine shut down.
+2017-12-10T14:42:11.845242000 0.467496s notice: Running rethinkdb 2.3.6 (CLANG 8.1.0 (clang-802.0.42))...
+2017-12-10T14:42:11.866796000 0.489045s notice: Running on Darwin 15.2.0 x86_64
+2017-12-10T14:42:11.866861000 0.489108s notice: Loading data from directory /Applications/XAMPP/xamppfiles/htdocs/node/coinpair/rethinkdb_data
+2017-12-10T14:42:11.898424000 0.520672s info: Automatically using cache size of 100 MB
+2017-12-10T14:42:11.898438000 0.520685s warn: Cache size does not leave much memory for server and query overhead (available memory: 980 MB).
+2017-12-10T14:42:11.898447000 0.520694s warn: Cache size is very low and may impact performance.
+2017-12-10T14:42:11.900481000 0.522729s notice: Listening for intracluster connections on port 29015
+2017-12-10T14:42:11.930675000 0.552923s notice: Listening for client driver connections on port 28015
+2017-12-10T14:42:11.930924000 0.553172s notice: Listening for administrative HTTP connections on port 8080
+2017-12-10T14:42:11.930928000 0.553175s notice: Listening on cluster addresses: 127.0.0.1, ::1
+2017-12-10T14:42:11.930930000 0.553177s notice: Listening on driver addresses: 127.0.0.1, ::1
+2017-12-10T14:42:11.930933000 0.553180s notice: Listening on http addresses: 127.0.0.1, ::1
+2017-12-10T14:42:11.930945000 0.553192s notice: To fully expose RethinkDB on the network, bind to all addresses by running rethinkdb with the `--bind all` command line option.
+2017-12-10T14:42:11.930948000 0.553195s notice: Server ready, "Leons_Air_2_fritz_box_rho" 64cd372a-bb78-410c-a75c-1aed90368888
+2017-12-10T14:42:13.371533000 1.993819s info: Table 000a41bb-3e75-4318-b3e1-4c19a1d637f4: Starting a new Raft election for term 4.
+2017-12-10T14:42:13.383594000 2.005880s info: Table 000a41bb-3e75-4318-b3e1-4c19a1d637f4: This server is Raft leader for term 4. Latest log index is 9.

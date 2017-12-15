@@ -1,0 +1,86 @@
+
+	/* 	Variable decleration, imported in @import
+	*	Fonts
+	*	Colors
+	*	Mixins
+	*/
+
+	/* Fonts */
+
+	$mainSans: "Source Sans Pro","Open Sans";
+	$mainMono: "Roboto Mono";
+
+	/* Color Palette */
+	$mainBackground: #FFFFFF;
+	$mainBlue: #0052F3;
+	$white: 		#FFFFFF;
+	$black:			#2A2121;
+	$mainLightGrey: #E7E6E4;
+
+	$grey: 			#F4F4F8;
+	$greyer: 		#E6E6EA;
+	$greyest: 		#CECED4;
+
+	$grey100:		#F5F5F5;
+	$grey200:		#EDEDED;
+	$grey400:		#BDBDBD;
+	$grey500: #D5D5D6;
+	$grey600:		#979797;
+	$grey700:		#757575;
+
+	$dark:			#595966;
+	$darker:		#212430;
+
+	$red:			#F15670;
+	$orange:		#FF9B85;
+	$yellow:		#FED766;
+	$green:			#60D394;
+	$blue:			#009FB7;
+
+	$blue50:		#E3F2FD;
+	$blue100:		#BBDEFB;
+	$blue200:		#90CAF9;
+	$blue300: 	#4FC3F7;
+	$blue400:		#42A5F5;
+	$blue500:		#2196F3;
+	$blue600:		#1E88E5;
+	$blue700:		#1976D2;
+	$blue800:		#1565C0;
+
+	$blueGrey50:	#ECEFF1;
+	$blueGrey800:	#455A64;
+	$blueGrey900:	#263238;
+
+
+	$green50:		#F1F8E9;
+	$green100:		#DCEDC8;
+	$green200:		#C5E1A5;
+	$green400:		#ABD378;
+	$green500:		#8BC34A;
+	$green550:		#83BD46;
+	$green600:		#7CB342;
+	$green800:		#689F38;
+
+	$lime50:		#F9FBE7;
+
+	/* Mixins */
+
+	@mixin transition($args) {
+	  -webkit-transition: $args;
+	  -moz-transition: $args;
+	  -ms-transition: $args;
+	  -o-transition: $args;
+	  transition: $args;
+	}
+	@mixin border-radius($args) {
+	  -webkit-border-radius: $args;
+	  -moz-border-radius: $args;
+	  -ms-border-radius: $args;
+	  -o-border-radius: $args;
+	  border-radius: $args;
+	}
+	@mixin box-shadow($args){
+		-webkit-box-shadow: $args;
+		-moz-box-shadow: $args;
+		box-shadow: $args;
+	}

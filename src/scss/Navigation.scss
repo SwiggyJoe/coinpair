@@ -1,0 +1,147 @@
+
+  .navigation{
+    font-family: $mainSans;
+    padding: 30px;
+    a{
+      &:hover{
+        text-decoration: none;
+      }
+    }
+    .logo{
+      display: inline-block;
+      color: $black;
+      font-size: 22px;
+      font-weight: 600;
+      padding-left: 30px;
+      &:hover{
+        text-decoration: none;
+        border: none;
+      }
+    }
+    .socket-status{
+      display: inline-block;
+      border: $mainLightGrey 2px solid;
+      padding: 5px 15px 5px 10px;
+      color: $black;
+      font-weight: 600;
+      font-size: 14px;
+      margin-left: 30px;
+      @include border-radius(50px);
+      position: relative;
+      top: -3px;
+      .bullet{
+        width: 5px;
+        height: 5px;
+        background: $green200;
+        display: inline-block;
+        border: 2px solid $green600;
+        @include border-radius(50%);
+        margin-right: 5px;
+      }
+    }
+
+    .navigation-nav{
+      float: right;
+      position: relative;
+      top: 3px;
+      ul{
+        li{
+          display: inline;
+          margin-left: 10px;
+          margin-right: 10px;
+          .active{
+            border-bottom: $mainBlue 3px solid;
+          }
+          a{
+            color: $black;
+            font-size: 20px;
+            font-weight: 600;
+            padding-bottom: 5px;
+            &:hover{
+              color: $mainBlue;
+            }
+          }
+        }
+      }
+    }
+
+    .navigation-settings{
+      position: relative;top: -2px;
+      float: right;
+      .head{
+        text-align: center;
+        color: $black;
+        min-width: 25px;
+        min-height: 20px;
+        display: inline-block;
+        font-weight: bold;
+        padding: 5px;
+        border: $mainLightGrey 2px solid;
+        position: relative;
+        @include border-radius(50%);
+        @include transition(all .2s);
+
+        &:hover, &:focus, &:active{
+          border-color: darken($mainLightGrey,15%);
+        }
+      }
+      .one{
+        margin-right: 10px;
+        margin-left: 10px;
+      }
+      .uk-dropdown{
+        border: 2px solid $mainLightGrey;
+        border-bottom-width: 5px;
+        font-family: $mainSans;
+        font-weight: 600;
+        @include border-radius(5px);
+        @include box-shadow(none);
+      }
+    }
+
+    .navigation-user{
+      margin-left: 10px;
+      position: relative;
+      top: 5px;
+      float: right;
+      .navigation-user-register{
+        display: inline-block;
+        .active{
+          border-color: $black;
+          &:hover{
+            border-color: $black !important;
+          }
+        }
+        a{
+          color: $black;
+          font-size: 14px;
+          font-weight: 600;
+          border: 2px solid $mainLightGrey;
+          padding: 4px 10px;
+          @include border-radius(50px);
+          &:hover{
+            border-color: darken($mainLightGrey,15%);
+          }
+        }
+      }
+      .navigation-user-login{
+        display: inline-block;
+        margin-right: 10px;
+        .active{
+            color: $dark;
+            &:hover{
+              color: $dark;
+            }
+
+        }
+        a{
+          color: $grey600;
+          &:hover{
+            color: $dark;
+          }
+        }
+      }
+    }
+
+
+  }

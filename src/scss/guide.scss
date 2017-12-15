@@ -1,0 +1,94 @@
+
+	/* 	Basic Styles imported in @import
+	*
+	*	Here are basic declarations like buttons, links
+	*	and everything that is needed often.
+	*
+	*/
+
+	/* Main Styles */
+
+	* {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+		-webkit-tap-highlight-color: transparent;
+	}
+
+	a{
+		text-decoration: none;
+		@include transition(all .2s);
+	}
+
+	body{
+	 	background: #FBFBFB;
+	 	-webkit-font-smoothing: antialiased; /* Fix for webkit rendering */
+	 	-webkit-text-size-adjust: 100%;
+	}
+
+	.noscroll { overflow: hidden; }
+
+	li{
+		list-style: none;
+	}
+
+	/* Button Styles */
+
+
+	/* Input styles */
+
+	input{
+
+	}
+
+	/* overlays */
+
+	.overlay{
+	  position: fixed;
+	  overflow-y: scroll;
+	  top: 0; left: 0; top: 0; bottom: 0;
+	  background: black;
+	  width: 100%;
+	  z-index: 9;
+	  opacity: 0.05;
+	  overflow: hidden;
+	  display: none;
+	}
+
+	.loadingOverlay{
+	  position: fixed;
+	  overflow-y: scroll;
+	  top: 0; left: 0; top: 0; bottom: 0;
+	  background: white;
+	  width: 100%;
+	  opacity: 0.5;
+	  overflow: hidden;
+	  @-webkit-keyframes beep {
+	    0%   { transform: scale(1); }
+	    33%   { transform: scale(1.2); }
+	    66%   { transform: scale(0.8);}
+	    100% { transform: scale(1); }
+	  }
+	  .loading{
+	    animation-name: beep;
+	     animation-duration: 1s;
+	     animation-iteration-count: infinite;
+	     animation-direction: alternate;
+	     animation-timing-function: ease-out;
+	     animation-fill-mode: forwards;
+	     animation-delay: 0s;
+	     position: fixed;
+	     top: 47%;
+	     left: 47%;
+	     font-family: $mainSans;
+	     font-weight: 600;
+	  }
+	  display: none;
+	}
+
+	/* Normal pages */

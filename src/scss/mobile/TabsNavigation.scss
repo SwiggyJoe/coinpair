@@ -1,0 +1,35 @@
+  body{
+    margin-bottom: 30px;
+  }
+  .TabsNavigation{
+    background: $darker;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    ul{
+      margin: 0;
+      padding: 0;
+      text-align: center;
+      li{
+        display: inline-block;
+        .active{
+
+          background: $mainBlue;
+        }
+        a{
+          font-family: $mainSans;
+          text-transform: uppercase;
+          font-size: 12px;
+          color: white;
+          font-weight: bold;
+          padding: 8px 15px;
+          display: inline-block;
+          &:hover{
+            text-decoration: none;
+          }
+        }
+      }
+    }
+
+  }
