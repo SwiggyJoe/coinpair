@@ -38,12 +38,12 @@
     }
 
     render() {
-      const { socket, config, coinTable } = this.props
+      const { socket, config, coinTable, auth} = this.props
       return (
         <div class="navigation">
 
         <Link to="/">
-          <div class="logo">MiCoins</div>
+          <div class="logo">CoinPair</div>
         </Link>
 
         <Link to="/" style={socket.connected ? {color: '#24BD1B'} : {color: 'red'}}>
@@ -80,6 +80,12 @@
 
         <div class="navigation-user">
 
+        {auth.authenticated ? (
+          <div class="navigation-user-register">
+            <NavLink to="/profile">{auth.user.details.mail}</NavLink>
+          </div>
+        ) : (
+        <div>
           <div class="navigation-user-login">
               <NavLink to="/login">Log In</NavLink>
           </div>
@@ -87,33 +93,38 @@
           <div class="navigation-user-register">
             <NavLink to="/register">Create an account</NavLink>
           </div>
+        </div>
+        ) }
+
+
 
         </div>
+        {
+          auth.authenticated ? (
+            <div class="navigation-nav">
+              <ul>
+                <li>
+                  <NavLink exact to="/">
+                    Coins
+                  </NavLink>
+                </li>
 
-          <div class="navigation-nav">
-            <ul>
-              <li>
-                <NavLink exact to="/">
-                  Coins
-                </NavLink>
-              </li>
+                <li>
+                  <NavLink to="/portfolio">
+                    Portfolio
+                  </NavLink>
+                </li>
 
-              <li>
-                <NavLink to="/portfolio">
-                  Portfolio
-                </NavLink>
-              </li>
+                <li>
+                  <NavLink to="/updates">
+                    Alpha
+                  </NavLink>
+                </li>
 
-              <li>
-                <NavLink to="/updates">
-                  Alpha
-                </NavLink>
-              </li>
-
-            </ul>
-          </div>
-
-
+              </ul>
+            </div>
+          ) : (<div></div>)
+        }
 
         </div>
       )

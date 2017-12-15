@@ -11,12 +11,15 @@
   import { newConnGeneralMarketData } from "../actions/generalMarketActions"
   import { newConnCoinDataSimple } from "../actions/coinActions"
   import { changeViewLayout } from "../actions/configActions"
+  import { unauth_user, add_user_details } from "../actions/authActions"
 
   // Layouts
   import FullWidthLayout from "./Layouts/FullWidthLayout"
   import MobileWidthLayout from "./Layouts/MobileWidthLayout"
 
   import { mapStateToProps } from '../reducers';
+
+
 
   //SCSS Declaration
   const widthMobile = 900
@@ -38,10 +41,13 @@
   export default class Layout extends React.Component {
     constructor(props){
       super(props)
-      const { dispatch, config } = this.props
+      const { dispatch, config, auth } = this.props
 
       socket.on('connect',() => {
         dispatch(socketConnected(socket))
+        if(auth.authenticated){
+          socket.emit('isTokenLegit', {token: auth.token})
+        }
       })
       socket.on('disconnect',() => {
         dispatch(socketDisconnected())
@@ -51,6 +57,14 @@
       })
       socket.on('newConnSimpleCoinData', (val) => {
         dispatch(newConnCoinDataSimple (val))
+      })
+      socket.on('isTokenLegitCallback', (val) => {
+        if(!val.isLegit){
+          dispatch(unauth_user())
+        }
+        else{
+          dispatch(add_user_details(val.user))
+        }
       })
 
       document.getElementsByTagName("BODY")[0].onresize = () => {
@@ -81,7 +95,7 @@
     }
 
     render() {
-      const { config } = this.props
+      const { config, auth } = this.props
       return (
         <div>
           { config.layout == "FULL" ? (<FullWidthLayout />) : (<MobileWidthLayout />)  }

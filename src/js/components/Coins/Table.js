@@ -166,12 +166,6 @@
             return {
               onClick: (e, handleOriginal) => {
                 store.dispatch(push('/coin/'+ rowInfo.original.id.toLowerCase()))
-                //alert(rowInfo.original.id)
-                console.log('A Td Element was clicked!')
-                console.log('it produced this event:', e)
-                console.log('It was in this column:', column)
-                console.log('It was in this row:', rowInfo)
-                console.log('It was in this table instance:', instance)
                 if (handleOriginal) {
                   handleOriginal()
                 }

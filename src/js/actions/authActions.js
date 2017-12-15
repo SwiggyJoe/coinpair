@@ -1,34 +1,19 @@
-export function auth_user(payload) {
+export function auth_user(token) {
   return {
     type: 'AUTH_USER',
-    payload: val
+    payload: token
   }
 }
 
-export function unauth_user(payload) {
+export function unauth_user() {
   return {
     type: 'UNAUTH_USER',
-    payload: val
   }
 }
 
-export function auth_error(payload) {
+export function add_user_details(details){
   return {
-    type: 'AUTH_ERROR',
-    payload: val
-  }
-}
-
-export function forgot_password_request(payload) {
-  return {
-    type: 'FORGOT_PASSWORD_REQUEST',
-    payload: val
-  }
-}
-
-export function protected_test(payload) {
-  return {
-    type: 'PROTECTED_TEST',
-    payload: val
+    type: 'ADD_USER_DETAILS',
+    payload: details,
   }
 }

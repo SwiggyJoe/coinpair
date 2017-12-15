@@ -3,7 +3,11 @@
   import UIkit from 'uikit';
   import { Link } from 'react-router-dom'
   import { connect } from "react-redux"
+  import { push } from 'react-router-redux'
+
   import { createPasswordHash } from "../../scripts/createPasswordHash"
+
+  import { auth_user, add_user_details } from "../../actions/authActions"
 
   import Cookies from 'universal-cookie'
   const cookies = new Cookies();
@@ -32,21 +36,30 @@
     }
 
     componentDidUpdate() {
-      let token = cookies.get('token')
-      console.log(token.token)
-
       const { socket }  = this.props.socket
+      const { auth, dispatch }  = this.props
+
+      let token = cookies.get('token')
+
+      if(typeof auth !== "undefined"){
+        if(auth.authenticated){
+          dispatch(push('/'))
+        }
+      }
+
       if(typeof socket !== "undefined" && !this.state.socketSetup){
         this.setState({
           socketSetup: true,
         })
         socket.on('loginCallback', (data) => {
+          this.setState({loading: false, error: !data.success})
           if(data.success){
             console.log(data)
-            cookies.set('token', {token: data.token}, { path: '/' });
+            cookies.set('token', {token: data.token}, { path: '/' })
+            this.props.dispatch(auth_user(data.token))
+            this.props.dispatch(add_user_details(data.user))
+            this.props.dispatch(push('/'))
           }
-
-          this.setState({loading: false, error: !data.success})
         })
       }
 

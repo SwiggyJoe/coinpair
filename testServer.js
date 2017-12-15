@@ -29,6 +29,7 @@
   // Object with all information about coins
   // !!!!!!!!!!! DO NOT SEND THIS TO CLIENT !!!!!!!!!!!!!!!!
   let allCoinObject = []
+  let allUserObject = {}
 
   // RethingDB Connection variable
   let connection = null
@@ -157,10 +158,16 @@
                           if (err) throw err;
                           console.log(JSON.stringify(result, null, 2));
                       });
+
+                      let userObject = result[0]
+                        userObject.password = "no"
+
                       socket.emit('loginCallback', {
                         success: true,
-                        token: token
+                        token: token,
+                        user: userObject,
                       })
+
                     }
                     else{
                       socket.emit('loginCallback', {success: false,})
@@ -179,6 +186,48 @@
 
         },1500)
 
+      })
+
+      socket.on('isTokenLegit', (data) => {
+        // SECURITY ISSUE
+        console.log(data.token)
+        r.db('coinpair').table('users').filter(r.row('token').eq(data.token)).
+        run(connection, function(err, cursor) {
+            cursor.toArray(function (err, result){
+              if(result.length > 0 && result.length < 2){
+                // TOKEN LEGIT SEND THAT TO USER
+                let userObject = result[0]
+                  userObject.password = "no"
+
+                socket.emit('isTokenLegitCallback', {
+                  isLegit: true,
+                  user: userObject,
+                })
+              }
+              else{
+                socket.emit('isTokenLegitCallback', {
+                  isLegit: false,
+                })
+              }
+            })
+          });
+      })
+
+      socket.on('logoutEvent', (data) => {
+        console.log("change token to 0 " + data.token)
+        r.db('coinpair').table('users').filter(r.row('token').eq(data.token)).
+        run(connection, function(err, cursor) {
+            cursor.toArray(function (err, result){
+              if(result.length > 0 && result.length < 2){
+                r.db('coinpair').table('users').filter(r.row('token').eq(data.token)).update({token: data.token}).
+                run(connection, function(err, result) {
+                    if (err) throw err;
+                    console.log(JSON.stringify(result, null, 2));
+                    console.log("Changed")
+                });
+              }
+            })
+          })
       })
 
     })
