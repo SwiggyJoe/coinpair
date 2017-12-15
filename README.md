@@ -1,1 +1,1 @@
-coinpairBeta
+Coinpair.me
