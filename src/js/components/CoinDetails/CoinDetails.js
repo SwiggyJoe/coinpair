@@ -78,6 +78,7 @@
 
       return (
         <div class="coinDetails">
+        {this.props.match.params.coinID}
           <div class="header uk-container">
 
             <div class="header-left">

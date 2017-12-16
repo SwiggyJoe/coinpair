@@ -27,7 +27,6 @@
   let token = cookies.get('token')
 
   if(typeof token !== "undefined"){
-    console.log("YES")
     store.dispatch(auth_user(token))
   }
 
@@ -49,27 +48,27 @@
           <Navigation location={this.props.router} />
 
           <Route exact path="/"
-          render={() => (auth.authenticated ? (<Coins />) : (<Login />))}
+          render={(props) => (auth.authenticated ? (<Coins {...props} />) : (<Login />))}
           />
 
           <Route exact path="/coin/:coinID"
-          render={() => (auth.authenticated ? (<CoinDetails />) : (<Login />))}
+          render={(props) => (auth.authenticated ? (<CoinDetails {...props} />) : (<Login />))}
           />
 
           <Route exact path="/coin/:coinID/:mode"
-          render={() => (auth.authenticated ? (<CoinDetails />) : (<Login />))}
+          render={(props) => (auth.authenticated ? (<CoinDetails {...props} />) : (<Login />))}
           />
 
           <Route exact path="/portfolio"
-          render={() => (auth.authenticated ? (<div>Portfolio</div>) : (<Login />))}
+          render={(props) => (auth.authenticated ? (<div>Portfolio</div>) : (<Login />))}
           />
 
           <Route path="/updates"
-          render={() => (auth.authenticated ? (<Updates />) : (<Login />))}
+          render={(props) => (auth.authenticated ? (<Updates {...props} />) : (<Login />))}
           />
 
           <Route path="/profile"
-          render={() => (auth.authenticated ? (<Profile />) : (<Login />))}
+          render={(props) => (auth.authenticated ? (<Profile {...props} />) : (<Login />))}
           />
 
           <Route path="/register" component={Register} />

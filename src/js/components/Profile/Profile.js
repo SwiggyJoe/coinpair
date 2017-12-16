@@ -10,6 +10,9 @@
 
   import { mapStateToProps } from '../../reducers';
 
+  import Cookies from 'universal-cookie'
+  const cookies = new Cookies();
+
   // Redux Store setup
   @connect((store) => {
     return mapStateToProps(store)
@@ -22,6 +25,7 @@
     handleLogout(e){
       const { socket, auth, dispatch } = this.props
       socket.socket.emit('logoutEvent', {token: auth.token})
+      cookies.remove('token')
       dispatch(unauth_user())
       dispatch(push('/login'))
     }
