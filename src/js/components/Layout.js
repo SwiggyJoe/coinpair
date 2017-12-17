@@ -12,12 +12,15 @@
   import { newConnCoinDataSimple } from "../actions/coinActions"
   import { changeViewLayout } from "../actions/configActions"
   import { unauth_user, add_user_details } from "../actions/authActions"
+  import { newPortfolioData } from "../actions/portfolioActions"
 
   // Layouts
   import FullWidthLayout from "./Layouts/FullWidthLayout"
   import MobileWidthLayout from "./Layouts/MobileWidthLayout"
 
   import { mapStateToProps } from '../reducers';
+
+
 
 
   //SCSS Declaration
@@ -58,6 +61,11 @@
       socket.on('newConnSimpleCoinData', (val) => {
         dispatch(newConnCoinDataSimple (val))
       })
+
+      socket.on('newPortfolioData', (val) => {
+        dispatch(newPortfolioData(val))
+      })
+
       socket.on('isTokenLegitCallback', (val) => {
         if(!val.isLegit){
           dispatch(unauth_user())
@@ -99,6 +107,8 @@
       }
 
     }
+
+
 
     render() {
       const { config, auth } = this.props

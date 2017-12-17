@@ -63,6 +63,9 @@
           <Route exact path="/portfolio"
           render={(props) => (auth.authenticated ? (<Portfolio {...props} />) : (<Login />))}
           />
+          <Route exact path="/portfolio/:config"
+          render={(props) => (auth.authenticated ? (<Portfolio {...props} />) : (<Login />))}
+          />
 
           <Route path="/updates"
           render={(props) => (auth.authenticated ? (<Updates {...props} />) : (<Login />))}

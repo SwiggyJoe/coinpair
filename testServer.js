@@ -17,9 +17,15 @@
   const log       = require ('ololog').configure ({ locate: false })  // A better Log
   require ('ansicolor').nice
 
+  // Import own classes
+  const Server      = require ('./server/server')
+
   // ____________________________________________ \\
   // Declare all Variables
   // ____________________________________________ \\
+
+  // server class
+  const server = new Server()
 
   function pre (datum) { return "[" + moment(datum).format('D-M-Y HH:mm:ss') + "]"}
 
@@ -112,17 +118,37 @@
 
   function initialize_server(){
 
-    /*r.db('coinpair').table('users').insert(user).
-    run(connection, function(err, result) {
-        if (err) throw err;
-        console.log(JSON.stringify(result, null, 2));
-    });*/
-
     // Starting SocketIO connection
     io.listen(port)
     log.bright.magenta(pre(new Date)+'[IO] Listening on port ', port)
 
+    server.addIO(io)
+    server.start()
+
     io.on('connection', (socket) => {
+
+      server.addSocket(socket)
+
+      if(server.ready){
+
+        let newConnData = server.getNewConnGeneralMarketData()
+        socket.emit("newConnGMData", newConnData)
+
+        let newCoinData =  server.getSimpleCoinData();
+        socket.emit("newConnSimpleCoinData", newCoinData)
+
+        socket.on('getCoinDetails', (data) => {
+          server.getChartData(data.coinID).then((dataChart) => {
+            socket.emit('callbackChart', dataChart)
+          })
+
+          socket.emit("newConnSimpleCoinData", newCoinData)
+          console.log("GOT IT "+ JSON.stringify(data))
+        })
+
+      }
+
+      /// NEW CODE
 
       log.bright.magenta(pre(new Date)+'[IO] New user connection')
 
@@ -190,7 +216,6 @@
 
       socket.on('isTokenLegit', (data) => {
         // SECURITY ISSUE
-        console.log(data.token)
         r.db('coinpair').table('users').filter(r.row('token').eq(data.token)).
         run(connection, function(err, cursor) {
             cursor.toArray(function (err, result){
@@ -230,44 +255,27 @@
           })
       })
 
+      socket.on('getPortfolioDetails', (data) => {
+          console.log(data.userID)
+
+          // GET ALL PORTFOLIOS OF USER
+          r.db('coinpair').table('portfolios').filter(r.row('fromUser').eq(data.userID))
+          .run(connection, function(err, cursor) {
+            cursor.toArray(function(err, result){
+              console.log(result[0])
+              socket.emit('newPortfolioData', result[0])
+            })
+          })
+      })
+
     })
 
+    setInterval(() => {
+      let newConnData = server.getNewConnGeneralMarketData()
+      io.emit("newConnGMData", newConnData)
+
+      let newCoinData =  server.getSimpleCoinData();
+      io.emit("newConnSimpleCoinData", newCoinData)
+    },10000)
 
   }
-
-  var stdin = process.openStdin();
-  stdin.addListener("data", function(d) {
-
-    var string = d.toString().trim().split(" ");
-
-    if(string[0] === "login"){
-
-      let username = string[1]
-      let password = createPasswordHash(string[2])
-
-      log("username: "+ username)
-      log("password hash: "+ password)
-
-      r.db('coinpair').table('users').filter(r.row('username').eq(username)).
-      run(connection, function(err, cursor) {
-          if (err) throw err;
-          cursor.toArray(function(err, result) {
-              if (err) throw err;
-
-              if(result[0].password == password){
-                console.log("logged in")
-              }
-              else{
-                console.log("wrong password.. try again")
-              }
-
-              //console.log(JSON.stringify(result, null, 2));
-          });
-      });
-
-    }
-
-    if(string[0] === "x"){
-      checkIfUserExist(string[1])
-    }
-  })

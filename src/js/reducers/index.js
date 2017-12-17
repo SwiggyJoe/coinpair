@@ -7,6 +7,7 @@ import generalMarket from "./generalMarketReducer"
 import coin from "./coinReducer"
 import coinTable from "./coinTableReducer"
 import auth from "./authReducer"
+import portfolio from "./portfolioReducer"
 
 
 export const mapStateToProps = (state) => {
@@ -18,6 +19,7 @@ export const mapStateToProps = (state) => {
       coin:           state.coin,
       coinTable:      state.coinTable,
       auth:           state.auth,
+      portfolio:      state.portfolio,
     }
 }
 
@@ -29,4 +31,5 @@ export const reducers = combineReducers({
   coin,
   coinTable,
   auth,
+  portfolio,
  })
