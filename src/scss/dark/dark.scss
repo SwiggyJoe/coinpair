@@ -1,0 +1,19 @@
+
+  .navigation{
+    .navigation-settings{
+      .head{
+        &:hover{
+          border-color: lighten($mainLightGrey,25%);
+        }
+      }
+    }
+    .navigation-user{
+      .navigation-user-register{
+        a{
+          &:hover{
+            border-color: lighten($mainLightGrey,25%);
+          }
+        }
+      }
+    }
+  }

@@ -20,7 +20,6 @@
   import { mapStateToProps } from '../reducers';
 
 
-
   //SCSS Declaration
   const widthMobile = 900
 
@@ -41,6 +40,7 @@
   export default class Layout extends React.Component {
     constructor(props){
       super(props)
+
       const { dispatch, config, auth } = this.props
 
       socket.on('connect',() => {
@@ -85,13 +85,19 @@
 
     componentWillUpdate(){
       const { dispatch, config } = this.props
+
       if(config.theme == "LIGHT"){
+        console.log("LIGHT")
         require('../../scss/index.scss')
+
+      } else if(config.theme == "DARK"){
+        require('../../scss/dark/index.scss')
       }
-      console.log(config.layout)
+
       if(config.layout == "MOBILE"){
         require('../../scss/mobile/index.scss')
       }
+
     }
 
     render() {

@@ -20,6 +20,35 @@
       }
     }
 
+    .features{
+      li{
+        position:relative;
+        background: $dark;
+        cursor: pointer;
+        @include transition(all .2s);
+        &:hover{
+          background: lighten($dark,5%);
+        }
+        .content{
+            z-index:9;
+            position:relative;
+            padding: 10px;
+            color: white;
+            .right{
+              float: right;
+            }
+        }
+        .progress{
+            z-index:1;
+            width:0px;
+            height:100%;
+            position:absolute;
+            background:$darker;
+        }
+      }
+
+    }
+
     .uk-container{
       max-width: 600px;
       margin: 25px auto;
@@ -73,31 +102,6 @@
         font-weight: 600;
       }
 
-      li{
-        position:relative;
-        background: $dark;
-        cursor: pointer;
-        @include transition(all .2s);
-        &:hover{
-          background: lighten($dark,5%);
-        }
-        .content{
-            z-index:9;
-            position:relative;
-            padding: 10px;
-            color: white;
-            .right{
-              float: right;
-            }
-        }
-        .progress{
-            z-index:1;
-            width:0px;
-            height:100%;
-            position:absolute;
-            background:$darker;
-        }
-      }
 
     }
   }

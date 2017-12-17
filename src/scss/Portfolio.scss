@@ -1,0 +1,166 @@
+
+  .portfolio{
+    font-family: $mainSans;
+    padding-top: 25px;
+    padding-bottom: 25px;
+    .header{
+      max-width: 600px;
+      margin: 0 auto;
+      background: white;
+      padding: 25px 0 50px 0;
+      h1,h2{
+        color: $black;
+        font-family: $mainSans;
+        margin: 0;
+        padding: 0;
+      }
+      h2{
+        font-size: 16px;
+        font-family: $mainMono;
+      }
+      .header-left{
+        display: inline-block;
+      }
+      .header-right{
+        text-align: center;
+        float: right;
+        display: inline-block;
+        font{
+          font-size: 18px;
+        }
+      }
+    }
+
+    .content {
+      .assets{
+        background: rgb(250,250,250);
+        padding: 0;
+        border: 1px solid $mainLightGrey;
+        @include border-radius(3px);
+        .header-assets{
+          padding: 15px;
+          h2{
+            font-size: 24px;
+            padding: 20px 30px;
+            font-weight: bold;
+            margin: 0;
+            padding: 0;
+          }
+          h3{
+            font-size: 14px;
+            margin: 0;
+            padding: 0;
+            color: $dark;
+          }
+          .title{
+            display: inline-block;
+          }
+          .add-asset{
+            display: inline-block;
+            float: right;
+            button{
+              position: relative;
+              top: 5px;
+              background: $mainLightGrey;
+              border: none;
+              cursor: pointer;
+              outline: none;
+              float: right;
+              padding: 0;
+              div{
+                background: white;
+                border: 2px solid $mainLightGrey;
+                padding: 8px 15px;
+                font-size: 16px;
+                font-weight: 600;
+                margin: 0;
+                position: relative;
+                @include border-radius(5px);
+              }
+              &:hover div{
+                top: -2px;
+              }
+              &:focus {
+                background: $mainBlue;
+                div{
+                  top: -2px;
+                  border-color: $mainBlue;
+                }
+
+              }
+            }
+
+          }
+        }
+        hr{
+          border: none;
+          border-bottom: 1px solid $mainLightGrey;
+          margin: 0;
+        }
+        font{
+          font-size: 12px;
+        }
+
+        ul{
+          padding-left: 0;
+          padding: 20px 15px;
+          margin-top: 0;
+          li{
+            background: white;
+            padding: 8px 15px;
+            border: 1px solid $mainLightGrey;
+            margin-bottom: 15px;
+            @include border-radius(3px);
+            img{
+              width: 24px;
+            }
+            .asset-name{
+              font-size: 16px;
+              padding-left: 10px;
+              padding-top: 4px;
+            }
+            h3,h2{
+              margin: 0; padding: 0;
+            }
+            h3, div{
+              display: inline-block;
+            }
+            .asset-own{
+              position: relative;
+              top: -6px;
+              float: right;
+              text-align: right;
+              h3{
+                font-size: 14px;
+              }
+              h2{
+                font-size: 12px;
+              }
+            }
+            .asset-price{
+              font-size: 16px;
+              padding-left: 10px;
+              padding-top: 4px;
+            }
+            .asset-absolute{
+              font-size: 16px;
+              padding-left: 10px;
+              padding-top: 4px;
+              color: green;
+              font-weight: bold;
+            }
+            .asset-percent{
+              font-size: 16px;
+              padding-left: 10px;
+              padding-top: 4px;
+              color: green;
+              font-weight: bold;
+            }
+
+          }
+        }
+
+      }
+    }
+
+  }

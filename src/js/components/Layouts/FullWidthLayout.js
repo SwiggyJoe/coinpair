@@ -6,6 +6,7 @@
   import Coins from "../Coins/Coins"
   import Updates from "../Updates/Updates"
   import Profile from "../Profile/Profile"
+  import Portfolio from "../Portfolio/Portfolio"
 
   import CoinDetails from "../CoinDetails/CoinDetails"
 
@@ -60,7 +61,7 @@
           />
 
           <Route exact path="/portfolio"
-          render={(props) => (auth.authenticated ? (<div>Portfolio</div>) : (<Login />))}
+          render={(props) => (auth.authenticated ? (<Portfolio {...props} />) : (<Login />))}
           />
 
           <Route path="/updates"

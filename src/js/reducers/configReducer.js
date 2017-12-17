@@ -27,6 +27,13 @@
           }
         }
 
+        case "CHANGE_THEME": {
+          return {
+            ...state,
+            theme: action.theme
+          }
+        }
+
       }
 
       return state

@@ -1,0 +1,64 @@
+
+  @import 'importGlobal';
+  @import '../Navigation';
+  @import '../Coins';
+  @import '../CoinDetails';
+  @import '../Updates';
+  @import '../react-table';
+  @import '../Register';
+  @import '../Login';
+
+  @import 'dark.scss';
+
+  html, body{
+    background: $mainBackground;
+    font-family: $mainSans;
+  }
+
+  body{
+    margin: 0;
+  }
+
+  .splitter{
+    width: 100%;
+    height: 2px;
+    background: $mainLightGrey;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+
+  @-webkit-keyframes Gradient {
+  	0% {
+  		background-position: 0% 50%
+  	}
+  	50% {
+  		background-position: 100% 50%
+  	}
+  	100% {
+  		background-position: 0% 50%
+  	}
+  }
+
+  @-moz-keyframes Gradient {
+  	0% {
+  		background-position: 0% 50%
+  	}
+  	50% {
+  		background-position: 100% 50%
+  	}
+  	100% {
+  		background-position: 0% 50%
+  	}
+  }
+
+  @keyframes Gradient {
+  	0% {
+  		background-position: 0% 50%
+  	}
+  	50% {
+  		background-position: 100% 50%
+  	}
+  	100% {
+  		background-position: 0% 50%
+  	}
+  }

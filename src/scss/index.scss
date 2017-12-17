@@ -7,10 +7,11 @@
   @import 'react-table';
   @import 'Register';
   @import 'Login';
+  @import 'Portfolio';
 
   html, body{
     background: $mainBackground;
-    font-family: $mainMono;
+    font-family: $mainSans;
   }
 
   body{
