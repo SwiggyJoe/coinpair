@@ -174,9 +174,14 @@
       }
 
       async _loadCMCGeneralMarketData(){
+        try{
         log.bright.lightBlue("[SERVER] LoadCMC Coin General Market Data")
         const data = await coinmarketcap.globalMarket()
         return data
+        }
+        catch(e){
+          console.log(e)
+        }
       }
 
       getSimpleCoinData(){
@@ -191,12 +196,17 @@
       }
 
       async _loadCMCcoins(limit, convert){
+        try{
         log.bright.lightBlue("[SERVER] LoadCMC Coin Data")
         const data = await coinmarketcap.ticker({
           limit,
           convert
         })
         return data;
+      }
+        catch(e){
+          console.log(e)
+        }
       }
 
 

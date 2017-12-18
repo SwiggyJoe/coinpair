@@ -7,6 +7,7 @@
   import Updates from "../Updates/Updates"
   import Profile from "../Profile/Profile"
   import Portfolio from "../Portfolio/Portfolio"
+  import Watchlist from "../Watchlist/Watchlist"
 
   import CoinDetails from "../CoinDetails/CoinDetails"
 
@@ -65,6 +66,10 @@
           />
           <Route exact path="/portfolio/:config"
           render={(props) => (auth.authenticated ? (<Portfolio {...props} />) : (<Login />))}
+          />
+
+          <Route exact path="/watchlist"
+          render={(props) => (auth.authenticated ? (<Watchlist {...props} />) : (<Login />))}
           />
 
           <Route path="/updates"

@@ -36,7 +36,17 @@
         background: rgb(250,250,250);
         padding: 0;
         border: 1px solid $mainLightGrey;
+        margin-top: 50px;
         @include border-radius(3px);
+        .nav-assets{
+          float: left;
+          padding-left: 15px;
+          position: absolute;
+          margin-top: -30px;
+          a{
+            padding-right: 15px;
+          }
+        }
         .header-assets{
           padding: 15px;
           h2{
@@ -110,14 +120,23 @@
             padding: 8px 15px;
             border: 1px solid $mainLightGrey;
             margin-bottom: 15px;
+            cursor: pointer;
             @include border-radius(3px);
+            @include transition(all .2s);
+            &:hover{
+              border-color: $mainBlue;
+            }
             img{
               width: 24px;
             }
             .asset-name{
               font-size: 16px;
               padding-left: 10px;
-              padding-top: 4px;
+              width: 20%;
+              overflow: hidden;
+              display: inline-block;
+              position: relative;
+              top: 5px;
             }
             h3,h2{
               margin: 0; padding: 0;
@@ -127,6 +146,7 @@
             }
             .asset-own{
               position: relative;
+
               top: -6px;
               float: right;
               text-align: right;
@@ -137,10 +157,25 @@
                 font-size: 12px;
               }
             }
-            .asset-price{
+            .asset-gain{
+              position: relative;
+              margin-right: 15px;
+              top: -6px;
+              float: right;
+              text-align: right;
+              h3{
+                font-size: 14px;
+              }
+              h2{
+                font-size: 12px;
+              }
+            }
+            .asset-price, .asset-total{
               font-size: 16px;
               padding-left: 10px;
               padding-top: 4px;
+              width: 15%;
+              font-weight: bold;
             }
             .asset-absolute{
               font-size: 16px;

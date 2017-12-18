@@ -100,11 +100,13 @@
           <div class="bugs uk-container">
             <h2>Known Bugs</h2>
             <p>
-              Here are all currently known bugs, which will be fixed.
+              Here are all currently known bugs, which will be fixed in the next update.
             </p>
 
             <ul class="uk-list uk-list-divide">
-              <li>Theme changing only works 1 time</li>
+              <li>Theme changing only works one time.</li>
+              <li><b>FIXED</b>Can only be logged in on one device. </li>
+
             </ul>
 
             <button><div>Report A Bug</div></button>

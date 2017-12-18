@@ -178,8 +178,19 @@
                   if(result.length > 0 && result.length < 2){
                     if(result[0].password == password){
                       console.log("logged in")
-                      let token = createToken()
-                      r.db('coinpair').table('users').filter(r.row('username').eq(username)).update({token: token}).
+                      let time = moment().add(1,'months',).unix()
+                      console.log(time)
+                      let token = {
+                        token: createToken(),
+                        expire: time
+                      }
+                      let oldTokenArray = result[0].token
+
+                      oldTokenArray.push(token)
+
+
+
+                      r.db('coinpair').table('users').filter(r.row('username').eq(username)).update({token: oldTokenArray}).
                       run(connection, function(err, result) {
                           if (err) throw err;
                           console.log(JSON.stringify(result, null, 2));
@@ -216,13 +227,38 @@
 
       socket.on('isTokenLegit', (data) => {
         // SECURITY ISSUE
-        r.db('coinpair').table('users').filter(r.row('token').eq(data.token)).
+        r.db('coinpair').table('users').
+        filter(
+          function(doc) {
+              return doc("token").contains(function(token) {
+                  return token("token").eq(data.token.token)
+
+              })
+          }
+        ).
         run(connection, function(err, cursor) {
             cursor.toArray(function (err, result){
               if(result.length > 0 && result.length < 2){
+
+                let newTokenObj = []
+                let time = moment().unix()
+
+                for(let i = 0; i < result[0].token.length; i++){
+                  if(moment(result[0].token[i].expire).isAfter(time)){
+                    newTokenObj.push(result[0].token[i])
+                  }
+                }
+
+                r.db('coinpair').table('users').filter(r.row('id').eq(result[0].id)).update({token: newTokenObj}).
+                run(connection, function(err, result) {
+                    if (err) throw err;
+                    console.log(JSON.stringify(result, null, 2));
+                });
+
                 // TOKEN LEGIT SEND THAT TO USER
                 let userObject = result[0]
                   userObject.password = "no"
+                  allUserObject.token = []
 
                 socket.emit('isTokenLegitCallback', {
                   isLegit: true,
@@ -239,12 +275,29 @@
       })
 
       socket.on('logoutEvent', (data) => {
-        console.log("change token to 0 " + data.token)
-        r.db('coinpair').table('users').filter(r.row('token').eq(data.token)).
+        r.db('coinpair').table('users').filter(
+          function(doc) {
+            console.log(data.token)
+              return doc("token").contains(function(token) {
+                  return token("token").eq(data.token)
+
+              })
+          }
+        ).
         run(connection, function(err, cursor) {
             cursor.toArray(function (err, result){
               if(result.length > 0 && result.length < 2){
-                r.db('coinpair').table('users').filter(r.row('token').eq(data.token)).update({token: data.token}).
+
+                let newTokenObj = []
+                let time = moment().unix()
+
+                for(let i = 0; i < result[0].token.length; i++){
+                  if(moment(result[0].token[i].expire).isAfter(time) && result[0].token[i].token != data.token){
+                    newTokenObj.push(result[0].token[i])
+                  }
+                }
+
+                r.db('coinpair').table('users').filter(r.row('id').eq(result[0].id)).update({token: newTokenObj}).
                 run(connection, function(err, result) {
                     if (err) throw err;
                     console.log(JSON.stringify(result, null, 2));

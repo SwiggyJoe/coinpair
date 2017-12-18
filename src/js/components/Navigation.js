@@ -134,6 +134,12 @@
                 </li>
 
                 <li>
+                  <NavLink to="/watchlist">
+                    Watchlist
+                  </NavLink>
+                </li>
+
+                <li>
                   <NavLink to="/portfolio">
                     Portfolio
                   </NavLink>

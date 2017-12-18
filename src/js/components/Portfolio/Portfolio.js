@@ -10,6 +10,7 @@
 
   import { getPriceInPersonalCurrencyExact } from '../../scripts/convert.js'
 
+  import Table from './assetTable'
 
   Number.prototype.formatMoney = function(c, d, t){
   var n = this,
@@ -28,7 +29,7 @@
     return mapStateToProps(store)
   })
 
-  export default class Profile extends React.Component {
+  export default class Portfolio extends React.Component {
     constructor(props){
       super(props)
 
@@ -96,6 +97,11 @@
       }
     }
 
+    handleAssetClick(e, i){
+      let clickedAsset = e
+
+    }
+
     render() {
       const { config, coin, portfolio} = this.props
 
@@ -104,8 +110,13 @@
         listItems = portfolio.assets.map((asset) => {
           let index = coin.findIndex(x => x.id==asset.coinID)
           let coinDetails = coin[index]
+
+          let absoluteGain = (coinDetails.price_usd*asset.holding) - (asset.buyPrice*asset.holding)
+          let percentGain = 100 / (asset.buyPrice*asset.holding) * (asset.holding * coinDetails.price_usd)
+
+          let totalWorth = coinDetails.price_usd * asset.holding
           return (
-            <li key={asset.assetID}>
+            <li key={asset.assetID} onClick={this.handleAssetClick.bind(this, asset.assetID)}>
               <img src={"https://files.coinmarketcap.com/static/img/coins/32x32/"+asset.coinID+".png"}/>
               <h3 class="asset-name">
                 <b>{coinDetails.name}</b>
@@ -115,17 +126,20 @@
                 <font>$</font>{getPriceInPersonalCurrencyExact(coinDetails.price_usd,config.currency)}
               </h3>
 
-              <h3 class="asset-absolute">
-                <font>{config.currency_symbol}</font>{(asset.price*asset.holding) - (coinDetails.price_usd*asset.holding)}
-              </h3>
+              <div class="asset-total">
+                <font>$</font>{getPriceInPersonalCurrencyExact(totalWorth ,config.currency)}
+              </div>
 
-              <h3 class="asset-percent">
-                {100 / (asset.price*asset.holding) * (asset.holding * coinDetails.price_usd)} <font>%</font>
-              </h3>
+
 
               <div class="asset-own">
                 <h3><b>{asset.holding} {coinDetails.symbol}</b></h3>
                 <h2>@ <font>{config.currency_symbol}</font>{getPriceInPersonalCurrencyExact(asset.buyPrice, config.currency)}</h2>
+              </div>
+
+              <div class="asset-gain">
+                <h3><font>{config.currency_symbol}</font>{ absoluteGain.formatMoney(2, '.', ',') }</h3>
+                <h2>{ percentGain.formatMoney(2, '.', ',') } <font>%</font></h2>
               </div>
             </li>
         )
@@ -135,6 +149,8 @@
 
       return (
         <div class="portfolio">
+
+
 
           <div class="header">
             <div class="header-left">
@@ -157,13 +173,13 @@
 
           <div class="uk-container content">
             <div class="uk-child-width-1-2" data-uk-grid>
-              <div class="">Test</div>
+              <div class=""></div>
 
               <div class="assets">
 
               <div class="nav-assets">
-                <Link to ="/portfolio">Current</Link>
-                <Link to ="/portfolio/sold">Sold</Link>
+                <a>Current</a>
+                <a>Sold</a>
               </div>
 
                 <div class="header-assets">
