@@ -156,6 +156,124 @@
           log.bright.magenta(pre(new Date)+'[IO] User disconnected')
       });
 
+      socket.on('registerAttempt', (data) => {
+        clearTimeout(timer)
+        let username  = data.username
+        let password  = data.password
+        let mail      = data.mail
+        let key       = data.key.toUpperCase()
+
+        //socket.emit("registerCallback", {data.success: false})
+
+        r.db('coinpair').table('invites').filter(
+          r.row("key").eq(key).and(r.row("used").eq(false))
+        ).
+        run(connection, function(err, cursor) {
+          if (err) throw err;
+          cursor.toArray(function(err, result){
+            if (err) throw err;
+            let l = result.length
+            if(Number(l) >= 1){
+              // KEY IS AWESOMEEE
+
+              timer = setTimeout(() => {
+
+                r.db('coinpair').table('users').filter(
+                  r.row("username").eq(username).or(r.row("details")("mail").eq(mail))
+                ).
+                run(connection, function(err, cursor) {
+                  if (err) throw err;
+                  cursor.toArray(function (err, result){
+                    if (err) throw err;
+                    if(result.length !== 0){
+                      // email or username already taken
+
+                    } else{
+                      // email and username are free
+
+                      let time = moment().add(1,'months',).unix()
+                      let token = {
+                        token: createToken(),
+                        expire: time
+                      }
+
+                      r.db('coinpair').table('users').insert({
+                        "details": {
+                          "invite": key,
+                          "lastLogged": null,
+                          "mail": mail,
+                          "mailVerify": false,
+                          "picture": "/",
+                          "plan": "BASE",
+                          "rank": "USER"
+                        },
+                        "password": password,
+                        "settings": {
+                          "currency": "USD",
+                          "tableSize": 50,
+                          "theme": "LIGHT"
+                        },
+                        "token": [token],
+                        "username": username,
+                        "createdTime": moment().unix()
+                      }).run(connection, function(err, result) {
+                          if (err) throw err;
+                          let userID = result["generated_keys"][0]
+
+                          // SET KEY TO USED
+                          r.db('coinpair').table('invites').filter(r.row('key').eq(key)).update({used: true, userID, timeUsed: moment().unix()}).
+                          run(connection, function(err, result) {
+                              if (err) throw err;
+                          });
+
+                          // CREATE PORTFOLIO
+                          r.db('coinpair').table('portfolios').insert({
+                            "assetGraph": [],
+                            "createdAt": moment().unix(),
+                            "fromUser": userID,
+                            "positions": []
+                          }).run(connection, function(err, result) {
+                              if (err) throw err;
+
+                              r.db('coinpair').table('users').filter(r.row('id').eq(userID)).
+                              run(connection, function(err, cursor) {
+                                  if (err) throw err;
+                                  cursor.toArray(function(err, result) {
+
+                                    // FINISH
+
+                                    let userObject = result[0]
+                                    userObject.password = ""
+
+                                    socket.emit('registerCallback', {success: true ,errorMsg: '', token: token, user: userObject})
+
+                                  })
+                                })
+
+
+                            })
+
+                      })
+
+
+                    }
+                  })
+                })
+
+              }, 800)
+
+
+            }
+            else{
+              // KEY IS NOT GOOD
+              socket.emit('registerCallback', {success: false, errorMsg: 'Key is not valid.'})
+            }
+          })
+        })
+
+
+      })
+
       socket.on('loginAttempt', (data) => {
 
         clearTimeout(timer)
@@ -168,7 +286,7 @@
           log("username: "+ username)
           log("password hash: "+ password)
 
-          r.db('coinpair').table('users').filter(r.row('username').eq(username)).
+          r.db('coinpair').table('users').filter(r.row('username').eq(username).or(r.row('details')('mail').eq(username))).
           run(connection, function(err, cursor) {
               if (err) throw err;
 
@@ -179,7 +297,6 @@
                     if(result[0].password == password){
                       console.log("logged in")
                       let time = moment().add(1,'months',).unix()
-                      console.log(time)
                       let token = {
                         token: createToken(),
                         expire: time
@@ -221,7 +338,7 @@
               });
           });
 
-        },1500)
+        },800)
 
       })
 
@@ -321,6 +438,76 @@
           })
       })
 
+      socket.on('inviteRequest', (data) => {
+        let mail = data.mail
+        let ip = data.ip
+
+        if(mail.length > 0 && ip.length > 0){
+
+          r.db('coinpair').table('requestInvite').filter(
+            r.row("mail").eq(mail)
+          ).
+          run(connection, function(err, cursor) {
+            if (err) throw err
+            cursor.toArray((err, result) => {
+              if (err) throw err
+
+              if(result.length == 0){
+                // GOOD
+
+                r.db('coinpair').table('requestInvite').filter(
+                  r.row("ip").eq(ip)
+                ).
+                run(connection, function(err, cursor) {
+                  if (err) throw err
+                  cursor.toArray((err, result) => {
+                    if (err) throw err
+
+                    if(result.length < 5){
+                      // GOOD
+
+                      r.db('coinpair').table('requestInvite').insert({
+                        "ip": ip,
+                        "mail": mail,
+                        "timestamp": moment().unix()
+                      }).run(connection, function(err, result) {
+                        if (err) throw err
+                        console.log(result)
+
+                        socket.emit('requestInviteCallback', {
+                          success: true,
+                          errorMsg: ''
+                        })
+
+                      })
+
+                    }else{
+
+                      socket.emit('requestInviteCallback', {
+                        success: false,
+                        errorMsg: 'You already submitted 5 times.'
+                      })
+
+                    }
+
+                  })
+                })
+
+              }
+              else{
+
+                socket.emit('requestInviteCallback', {
+                  success: false,
+                  errorMsg: 'E-Mail already in list.'
+                })
+
+              }
+            })
+          })
+
+        }
+
+      })
     })
 
     setInterval(() => {

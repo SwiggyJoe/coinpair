@@ -56,13 +56,36 @@
       text-transform: uppercase;
     }
 
-    .form{
+    .form,.message,.message-success{
       max-width: 350px;
       background: rgb(251,251,251);
       margin: 0 auto;
       padding: 40px;
+      padding-top: 10px;
       margin-bottom: 25px;
+      position: relative;
       @include border-radius(5px);
+
+      .overlayForm{
+        min-width: 100%;
+        min-height: 100%;
+        position: absolute;
+        background: rgb(251,251,251);;
+        top: 0;
+        left: 0;
+        z-index: 1;
+        @include border-radius(5px);
+        .loading{
+          position: absolute;
+          top:50%;
+          text-align: center;
+          width: 100%;
+          font-size: 18px;
+          i{
+            margin-right: 10px;
+          }
+        }
+      }
 
       .label{
         font-family: $mainSans;
@@ -118,5 +141,31 @@
       }
 
 
+    }
+    .message{
+      padding-top: 5px;
+      padding-bottom: 5px;
+      border: 2px solid $red;
+      color: $red;
+      text-align: center;
+      display: none;
+      p{
+        padding: 0;
+        margin: 0;
+        font-weight: bold;
+      }
+    }
+    .message-success{
+      padding-top: 5px;
+      padding-bottom: 5px;
+      border: 2px solid $green;
+      color: $green;
+      text-align: center;
+      display: none;
+      p{
+        padding: 0;
+        margin: 0;
+        font-weight: bold;
+      }
     }
   }

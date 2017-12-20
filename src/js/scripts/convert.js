@@ -26,13 +26,13 @@ var n = this,
       let result = exchangeCurrency(val, currency)
 
       if(result > 1 && result < 10000){
-          result = result.formatMoney(2,'.',',')
+          result = result.formatMoney(2,',','.')
 
         }else if (result > 10000) {
-          result = result.formatMoney(0,'.',',')
+          result = result.formatMoney(0,',','.')
         }
         else if (result < 1){
-          result = result.formatMoney(5,'.',',')
+          result = result.formatMoney(5,',','.')
         }
 
         return result
@@ -46,10 +46,10 @@ var n = this,
       let result = exchangeCurrency(val, currency)
 
         if (result < 1){
-          result = result.formatMoney(5,'.',',')
+          result = result.formatMoney(5,',','.')
         }
         else{
-          result = result.formatMoney(2,'.',',')
+          result = result.formatMoney(2,',','.')
         }
 
         return result

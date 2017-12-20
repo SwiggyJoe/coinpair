@@ -41,6 +41,7 @@
     "fixed-data-table-2": "^0.8.6",
     "history": "^4.7.2",
     "image-webpack-loader": "^3.4.2",
+    "ip": "1.1.5",
     "jsonwebtoken": "^8.1.0",
     "lodash": "^4.17.4",
     "moment": "^2.19.2",

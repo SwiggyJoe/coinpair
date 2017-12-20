@@ -12,6 +12,8 @@
 
   import Table from './assetTable'
 
+  const moment    = require('moment')
+
   Number.prototype.formatMoney = function(c, d, t){
   var n = this,
     c = isNaN(c = Math.abs(c)) ? 2 : c,
@@ -35,9 +37,11 @@
 
       this.state = {
         dataRequested: false,
+        finishedGlobalPositions: false,
         calculated: false,
         worth: 0,
         percentChangeWorth: 0,
+        globalPositions: [],
       }
 
       setInterval(() => {
@@ -66,29 +70,6 @@
       const { socket }        = this.props.socket
       const { coin, auth, portfolio }    = this.props
 
-      if(typeof portfolio.id !== "undefined" && this.state.calculated == false){
-
-        let valueOfPortfolio  = 0
-        let buyValue          = 0
-
-        for (const asset of portfolio.assets){
-          let index = coin.findIndex(x => x.id==asset.coinID);
-
-          valueOfPortfolio +=  (coin[index].price_usd*asset.holding)
-          buyValue         += (asset.holding * asset.buyPrice)
-        }
-
-        let percent = ((100/buyValue) * valueOfPortfolio) - 100
-
-        this.setState({
-          worth: valueOfPortfolio,
-          percentChangeWorth: percent,
-          calculated: true,
-        })
-
-      }
-
-
       if(typeof socket !== "undefined" && !this.state.dataRequested && auth.user.id !== ""){
 
         socket.emit('getPortfolioDetails', {userID: auth.user.id})
@@ -102,49 +83,146 @@
 
     }
 
+    componentWillUpdate(){
+
+      /*
+        Goal here is to create a object for each coin
+        with current holding & buy price.
+      */
+
+      const {
+              portfolio,
+              coin
+            } = this.props
+
+      if(typeof portfolio.id !== "undefined" && !this.state.finishedGlobalPositions){
+
+        this.setState({
+          finishedGlobalPositions: true,
+        })
+
+        console.log("YES")
+
+        let globalPositions = []
+        let finishedCoins = []
+
+       for(let i = 0; i < portfolio.positions.length; i++){
+          let index       = coin.findIndex(x => x.id == portfolio.positions[i].coinID)
+          let coinDetails = coin[index]
+
+          if(finishedCoins.indexOf(coinDetails.id) < 0){
+
+            // Creates an Array with all positions of coin
+            let allPositionsOfCoin = portfolio.positions.filter((obj) => {
+              return obj.coinID == coinDetails.id ?  true : false
+            })
+
+            // now use this information to create a master position
+            // with how many coins are hold and the average price
+            /* @ Push into Array gloablPositions which will be later
+            pushed into a state array
+              Output: {
+                coinID,
+                value,
+                avgBuyPrice
+              }
+            */
+            let avgPrice = 0
+            let value = 0
+
+            for (let x = 0; x < allPositionsOfCoin.length; x++){
+
+              let position = allPositionsOfCoin[x]
+              let sellsOfPosition = position.sells
+
+              let originalValue = position.originalValue
+              let currentValue  = originalValue
+
+              for(let y = 0; y < sellsOfPosition.length; y++){
+                currentValue -= sellsOfPosition[y].value
+              }
+
+
+              avgPrice == 0 ? avgPrice = position.buyPrice
+              : avgPrice = (avgPrice*value+currentValue*position.buyPrice)/(value+currentValue)
+
+              value += currentValue
+            }
+
+            let pushIntoGlobalPositions = {
+              coinID: coinDetails.id,
+              value,
+              avgPrice
+            }
+
+            globalPositions.push(pushIntoGlobalPositions)
+            finishedCoins.push(coinDetails.id)
+          }
+          else{
+            // COIN ALREADY FINISHED
+          }
+        }
+        console.log(globalPositions)
+        this.setState({
+          globalPositions
+        })
+
+      }
+
+      // HERE CALCULATING
+      if(this.state.globalPositions !== [] && this.state.calculated == false){
+
+        let valueOfPortfolio  = 0
+        let buyValue          = 0
+
+
+
+        const globalPositions = this.state.globalPositions
+          console.log(this.state.globalPositions)
+            console.log(globalPositions)
+        for (let i = 0; i < globalPositions.length; i++){
+          let index         = coin.findIndex(x => x.id==globalPositions[i].coinID);
+          buyValue          += globalPositions[i].value * globalPositions[i].avgPrice
+          valueOfPortfolio  += (coin[index].price_usd*globalPositions[i].value)
+        }
+
+        let percent = ((100/buyValue) * valueOfPortfolio) - 100
+
+        this.setState({
+          worth: valueOfPortfolio,
+          percentChangeWorth: percent,
+          calculated: true,
+        })
+
+      }
+      // END CALC
+
+    }
+
     render() {
       const { config, coin, portfolio} = this.props
 
       let listItems
-      if(typeof portfolio.id !== "undefined"){
-        listItems = portfolio.assets.map((asset) => {
-          let index = coin.findIndex(x => x.id==asset.coinID)
-          let coinDetails = coin[index]
 
-          let absoluteGain = (coinDetails.price_usd*asset.holding) - (asset.buyPrice*asset.holding)
-          let percentGain = 100 / (asset.buyPrice*asset.holding) * (asset.holding * coinDetails.price_usd)
+      listItems = this.state.globalPositions.map((asset) => {
+        let index = coin.findIndex(x => x.id==asset.coinID)
+        let coinDetails = coin[index]
 
-          let totalWorth = coinDetails.price_usd * asset.holding
-          return (
-            <li key={asset.assetID} onClick={this.handleAssetClick.bind(this, asset.assetID)}>
-              <img src={"https://files.coinmarketcap.com/static/img/coins/32x32/"+asset.coinID+".png"}/>
-              <h3 class="asset-name">
-                <b>{coinDetails.name}</b>
-              </h3>
+        return (
+          <li key={asset.coinID} onClick={this.handleAssetClick.bind(this, asset.coinID)}>
+            <img src={"https://files.coinmarketcap.com/static/img/coins/32x32/"+asset.coinID+".png"}/>
+            <h3 class="asset-name">
+              <b>{coinDetails.name}</b>
+            </h3>
 
-              <h3 class="asset-price">
-                <font>$</font>{getPriceInPersonalCurrencyExact(coinDetails.price_usd,config.currency)}
-              </h3>
+            <div class="asset-own">
+              <h3><b>{asset.value} {coinDetails.symbol}</b></h3>
+              <h2>@ <font>{config.currency_symbol}</font>{getPriceInPersonalCurrencyExact(asset.avgPrice, config.currency)}</h2>
+            </div>
 
-              <div class="asset-total">
-                <font>$</font>{getPriceInPersonalCurrencyExact(totalWorth ,config.currency)}
-              </div>
-
-
-
-              <div class="asset-own">
-                <h3><b>{asset.holding} {coinDetails.symbol}</b></h3>
-                <h2>@ <font>{config.currency_symbol}</font>{getPriceInPersonalCurrencyExact(asset.buyPrice, config.currency)}</h2>
-              </div>
-
-              <div class="asset-gain">
-                <h3><font>{config.currency_symbol}</font>{ absoluteGain.formatMoney(2, '.', ',') }</h3>
-                <h2>{ percentGain.formatMoney(2, '.', ',') } <font>%</font></h2>
-              </div>
-            </li>
+          </li>
         )
-        });
-      }
+      })
 
 
       return (
@@ -155,7 +233,7 @@
           <div class="header">
             <div class="header-left">
               <h1>Portfolio</h1>
-              <h2>ADD DATE(16. Dezember, 2017)</h2>
+              <h2>{moment().format("D. MMMM, YYYY")}</h2>
             </div>
 
             <div class="header-right">
@@ -190,7 +268,7 @@
                   </div>
 
                   <div class="add-asset">
-                    <button><div>Add Asset</div></button>
+                    <button><div>Buy</div></button>
                   </div>
 
                 </div>
@@ -212,3 +290,53 @@
       )
     }
   }
+
+
+/*
+
+const { config, coin, portfolio} = this.props
+
+let listItems
+if(typeof portfolio.id !== "undefined"){
+  listItems = portfolio.assets.map((asset) => {
+    let index = coin.findIndex(x => x.id==asset.coinID)
+    let coinDetails = coin[index]
+
+    let absoluteGain = (coinDetails.price_usd*asset.holding) - (asset.buyPrice*asset.holding)
+    let percentGain = 100 / (asset.buyPrice*asset.holding) * (asset.holding * coinDetails.price_usd)
+
+    let totalWorth = coinDetails.price_usd * asset.holding
+    return (
+      <li key={asset.assetID} onClick={this.handleAssetClick.bind(this, asset.assetID)}>
+        <img src={"https://files.coinmarketcap.com/static/img/coins/32x32/"+asset.coinID+".png"}/>
+        <h3 class="asset-name">
+          <b>{coinDetails.name}</b>
+        </h3>
+
+        <h3 class="asset-price">
+          <font>$</font>{getPriceInPersonalCurrencyExact(coinDetails.price_usd,config.currency)}
+        </h3>
+
+        <div class="asset-total">
+          <font>$</font>{getPriceInPersonalCurrencyExact(totalWorth ,config.currency)}
+        </div>
+
+
+
+        <div class="asset-own">
+          <h3><b>{asset.holding} {coinDetails.symbol}</b></h3>
+          <h2>@ <font>{config.currency_symbol}</font>{getPriceInPersonalCurrencyExact(asset.buyPrice, config.currency)}</h2>
+        </div>
+
+        <div class="asset-gain">
+          <h3><font>{config.currency_symbol}</font>{ absoluteGain.formatMoney(2, '.', ',') }</h3>
+          <h2>{ percentGain.formatMoney(2, '.', ',') } <font>%</font></h2>
+        </div>
+      </li>
+  )
+  });
+}
+
+
+
+*/

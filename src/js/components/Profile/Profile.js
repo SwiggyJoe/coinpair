@@ -30,9 +30,18 @@
       dispatch(push('/login'))
     }
     render() {
-      const { socket } = this.props
+      const { socket, auth } = this.props
       return (
         <div class="Profile">
+
+          <div class="header">
+            <h1>{auth.user.username}</h1>
+            <h2>{auth.user.details.mail}</h2>
+            <div class="header-nav">
+            </div>
+          </div>
+
+
           <button onClick={this.handleLogout.bind(this)}>Logout</button>
         </div>
       )

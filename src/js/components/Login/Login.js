@@ -54,7 +54,6 @@
         socket.on('loginCallback', (data) => {
           this.setState({loading: false, error: !data.success})
           if(data.success){
-            console.log(data)
             cookies.set('token', {token: data.token}, { path: '/' })
             this.props.dispatch(auth_user(data.token))
             this.props.dispatch(add_user_details(data.user))
@@ -117,7 +116,6 @@
               <button
                 class="request"
                 onClick={this.handleLogin.bind(this)}
-                className={this.state.loading ? "request" : "request"}
                 >
                 <div>
                   Login
