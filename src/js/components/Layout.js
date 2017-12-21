@@ -95,16 +95,15 @@
       const { dispatch, config } = this.props
 
       if(config.theme == "LIGHT"){
-        console.log("LIGHT")
         require('../../scss/index.scss')
 
       } else if(config.theme == "DARK"){
         require('../../scss/dark/index.scss')
       }
 
-      if(config.layout == "MOBILE"){
+      /*if(config.layout == "MOBILE"){
         require('../../scss/mobile/index.scss')
-      }
+      }*/
 
     }
 

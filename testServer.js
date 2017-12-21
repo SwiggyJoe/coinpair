@@ -32,6 +32,9 @@
   // SocketIO
   const port = 8000
 
+  // VOTES FOR USER FEATURE
+  const leftVotesGlobal = 2
+
   // Object with all information about coins
   // !!!!!!!!!!! DO NOT SEND THIS TO CLIENT !!!!!!!!!!!!!!!!
   let allCoinObject = []
@@ -533,9 +536,6 @@
         .run(connection, function(err, cursor) {
           cursor.toArray(function(err, result){
 
-            console.log(coinID)
-            console.log(userID)
-
             let watchListOld = result[0].watchlist
             let index = watchListOld.indexOf(coinID)
 
@@ -562,9 +562,14 @@
               features: [{
               desc: '..',
               votes: 0
-            }]
+            }],
+              totalVotes,
+              votesLeft
             }
         */
+
+        let userID = data.userID
+        let leftVotes = leftVotesGlobal
 
         r.db('coinpair').table('featuresSoon')
         .run(connection, function(err, cursor) {
@@ -579,16 +584,22 @@
             for (let i = 0; i < result.length; i++){
               // go through all features
               let desc = result[i].desc
+              let id = result[i].id
               let votes = 0
 
+
               for (let x = 0; x < result[i].votes.length; x++){
+                if(result[i].votes[x].user === userID &&
+                moment.unix(result[i].votes[x].timestamp).isSame(moment(), 'd')){
+                  leftVotes--
+                }
                 // go through all Votes
                 votes++
                 totalVotes++
               }
 
               // Fill the featuresArray
-              let featureObject = {desc, votes}
+              let featureObject = {desc, votes, id}
               featuresArray.push(featureObject)
             }
 
@@ -602,14 +613,74 @@
                 object = {
                   bugs: bugsArray,
                   features: featuresArray,
-                  totalVotes
+                  totalVotes,
+                  leftVotes
                 }
+
                 socket.emit('updateDetailsCallback', object)
 
               })
             })
 
           })
+        })
+
+      })
+
+      socket.on('voteEvent', (data) => {
+        let userID = data.userID
+        let featureID = data.featureID
+
+        r.db('coinpair').table('featuresSoon').filter(r.row('id').eq(data.featureID))
+        .run(connection, function(err, cursor) {
+          cursor.toArray(function(err, result){
+            let f = result[0]
+            let oldVotes = f.votes
+
+            let voteObject = {
+              user: userID,
+              timestamp: moment().unix()
+            }
+
+            oldVotes.push(voteObject)
+
+            r.db('coinpair').table('featuresSoon').filter(r.row('id').eq(featureID)).update({votes: oldVotes}).
+            run(connection, function(err, result) {
+                if (err) throw err;
+            })
+
+          })
+        })
+      })
+
+      socket.on('reportBugEvent', (data) => {
+        let userBrowser = data.userAgent
+        let userID      = data.userID
+        let desc        = data.desc
+
+        r.db('coinpair').table('bugs').insert({
+          "userAgent": userBrowser,
+          "userID": userID,
+          "timestamp": moment().unix(),
+          "desc": desc
+        }).run(connection, function(err, result) {
+          if (err) throw err
+          socket.emit('reportBugCallback', {success: true})
+        })
+
+      })
+
+      socket.on('requestFeatureEvent', (data) => {
+        let userID      = data.userID
+        let desc        = data.desc
+
+        r.db('coinpair').table('requestedFeatures').insert({
+          "userID": userID,
+          "timestamp": moment().unix(),
+          "desc": desc
+        }).run(connection, function(err, result) {
+          if (err) throw err
+          socket.emit('requestFeatureCallback', {success: true})
         })
 
       })

@@ -21,6 +21,12 @@
     }
 
     .features{
+      .no-votes-li{
+        cursor: default;
+        &:hover{
+          background: $dark !important;
+        }
+      }
       li{
         position:relative;
         background: $dark;
