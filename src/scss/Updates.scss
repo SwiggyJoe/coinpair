@@ -88,6 +88,7 @@
         }
         &:focus {
           background: $mainBlue;
+          color: $black;
           div{
             top: -2px;
             border-color: $mainBlue;

@@ -11,6 +11,8 @@
 
   import CoinDetails from "../CoinDetails/CoinDetails"
 
+  import Footer from "../Footer/Footer"
+
   import Register from "../Register/Register"
   import Login from "../Login/Login"
 
@@ -82,6 +84,8 @@
 
           <Route path="/register" component={Register} />
           <Route path="/login" component={Login} />
+
+          <Footer />
         </div>
       )
     }

@@ -107,6 +107,15 @@ $black_50: rgba(0, 0, 0, 0.5);
 	font-family: $mainSans;
 	font-size: 18px;
 
+	.favorite{
+		@include transition(.2s all);
+		color: $dark;
+		&:hover{
+			color: $mainBlue;
+			zoom: 1.2;
+		}
+	}
+
 	* {
 		//Instead of the line below you could use @include box-sizing($bs)
 		box-sizing: border-box;

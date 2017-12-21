@@ -11,9 +11,57 @@
     };
   })
 
-  export default class Coins extends React.Component {
+  export default class Updates extends React.Component {
+    constructor(props){
+      super(props)
+      this.state = {
+        dataRequested: false,
+        bugs: ['Loading..'],
+        features: [{desc: 'Loading..', votes: 0}],
+        totalVotes: 0,
+      }
+    }
+    componentWillMount(){
+      const { socket }  = this.props.socket
+      if(typeof socket !== "undefined" && !this.state.dataRequested){
+
+        this.setState({
+          dataRequested: true,
+        })
+        socket.emit('getUpdateDetails',{})
+      }
+    }
+    componentDidUpdate(){
+      const { socket }  = this.props.socket
+      if(typeof socket !== "undefined" && !this.state.dataRequested){
+
+        this.setState({dataRequested: true})
+        socket.emit('getUpdateDetails', {})
+      }
+
+
+    }
+
+
     render() {
-      const { socket } = this.props
+      const { socket }  = this.props.socket
+
+      if(typeof socket !== "undefined" && true){
+        socket.on('updateDetailsCallback', (data) => {
+
+          let features = data.features
+          features.sort((a,b) => {
+            return a.votes < b.votes ? true : false
+          })
+
+          this.setState({
+            bugs: data.bugs,
+            features: features,
+            totalVotes: data.totalVotes,
+          })
+        })
+      }
+
       return (
         <div class="updates">
           <div class="header">
@@ -62,35 +110,24 @@
 
             <ul class="uk-list uk-list-divide">
 
-            <li>
-              <div class="progress" style={{width:'50%'}}></div>
-              <div class="content">
-                Coin Comparing
-                <div class="right">
-                  50 Votes
-                </div>
-              </div>
-            </li>
+              {
+                this.state.features.map((feature, index) => {
+                  let calcWidth = 100/this.state.totalVotes * feature.votes
 
-              <li>
-                <div class="progress" style={{width:'30%'}}></div>
-                <div class="content">
-                    Social Networks of Coins
-                    <div class="right">
-                      30 Votes
-                    </div>
-                </div>
-              </li>
+                  return(
+                    <li key={index}>
+                      <div class="progress" style={{width:calcWidth+'%'}}></div>
+                      <div class="content">
+                        {feature.desc}
+                        <div class="right">
+                          {feature.votes} Votes
+                        </div>
+                      </div>
+                    </li>
+                  )
+                })
+              }
 
-              <li>
-                <div class="progress" style={{width:'20%'}}></div>
-                <div class="content">
-                  Deep Fundamental Analysis
-                  <div class="right">
-                    20 Votes
-                  </div>
-                </div>
-              </li>
 
             </ul>
 
@@ -104,9 +141,16 @@
             </p>
 
             <ul class="uk-list uk-list-divide">
-              <li>Theme changing only works one time.</li>
-              <li><b>FIXED</b>Can only be logged in on one device. </li>
+              {
+                this.state.bugs.map((bug, index) => {
 
+                  return (
+                    <li key={index}>{bug}</li>
+                  )
+
+                  i++
+                })
+              }
             </ul>
 
             <button><div>Report A Bug</div></button>

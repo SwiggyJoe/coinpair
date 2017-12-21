@@ -17,3 +17,17 @@ export function add_user_details(details){
     payload: details,
   }
 }
+
+export function addWatchlist(coinID){
+  return {
+    type: 'ADD_WATCHLIST',
+    payload: coinID,
+  }
+}
+
+export function deleteFromWatchlist(coinID){
+  return {
+    type: 'DELETE_FROM_WATCHLIST',
+    payload: coinID,
+  }
+}

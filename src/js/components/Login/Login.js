@@ -93,7 +93,7 @@
             <center>
               <h1>Login</h1>
               <p>
-                Welcome back! {this.state.username} <br/> {this.state.password}
+                Welcome back!
               </p>
             </center>
 

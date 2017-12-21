@@ -143,7 +143,6 @@
           })
 
           socket.emit("newConnSimpleCoinData", newCoinData)
-          console.log("GOT IT "+ JSON.stringify(data))
         })
 
       }
@@ -205,7 +204,8 @@
                           "mailVerify": false,
                           "picture": "/",
                           "plan": "BASE",
-                          "rank": "USER"
+                          "rank": "USER",
+                          "lastLogin": moment().unix()
                         },
                         "password": password,
                         "settings": {
@@ -247,6 +247,8 @@
 
                                     socket.emit('registerCallback', {success: true ,errorMsg: '', token: token, user: userObject})
 
+                                    log.white(pre(new Date) + "[USER] "+ username + " registered with ["+key+"]")
+
                                   })
                                 })
 
@@ -283,9 +285,6 @@
 
         timer = setTimeout(() => {
 
-          log("username: "+ username)
-          log("password hash: "+ password)
-
           r.db('coinpair').table('users').filter(r.row('username').eq(username).or(r.row('details')('mail').eq(username))).
           run(connection, function(err, cursor) {
               if (err) throw err;
@@ -295,22 +294,22 @@
 
                   if(result.length > 0 && result.length < 2){
                     if(result[0].password == password){
-                      console.log("logged in")
+                      log.white(pre(new Date) + "[USER] "+ username + " logged in.")
                       let time = moment().add(1,'months',).unix()
                       let token = {
                         token: createToken(),
                         expire: time
                       }
                       let oldTokenArray = result[0].token
-
                       oldTokenArray.push(token)
 
+                      let oldDetailsObject = result[0].details
+                      oldDetailsObject.lastLogin = moment().unix()
 
 
-                      r.db('coinpair').table('users').filter(r.row('username').eq(username)).update({token: oldTokenArray}).
+                      r.db('coinpair').table('users').filter(r.row('username').eq(username)).update({token: oldTokenArray, details: oldDetailsObject}).
                       run(connection, function(err, result) {
                           if (err) throw err;
-                          console.log(JSON.stringify(result, null, 2));
                       });
 
                       let userObject = result[0]
@@ -325,16 +324,11 @@
                     }
                     else{
                       socket.emit('loginCallback', {success: false,})
-                      console.log("wrong password.. try again")
                     }
                   }
                   else{
                     socket.emit('loginCallback', {success: false})
-                    console.log("wrong password or username.. try again")
                   }
-
-
-                  //console.log(JSON.stringify(result, null, 2));
               });
           });
 
@@ -369,7 +363,6 @@
                 r.db('coinpair').table('users').filter(r.row('id').eq(result[0].id)).update({token: newTokenObj}).
                 run(connection, function(err, result) {
                     if (err) throw err;
-                    console.log(JSON.stringify(result, null, 2));
                 });
 
                 // TOKEN LEGIT SEND THAT TO USER
@@ -386,6 +379,7 @@
                 socket.emit('isTokenLegitCallback', {
                   isLegit: false,
                 })
+                log.bright.red(pre(new Date) + "[USER] Token was not legit.")
               }
             })
           });
@@ -394,7 +388,6 @@
       socket.on('logoutEvent', (data) => {
         r.db('coinpair').table('users').filter(
           function(doc) {
-            console.log(data.token)
               return doc("token").contains(function(token) {
                   return token("token").eq(data.token)
 
@@ -414,11 +407,11 @@
                   }
                 }
 
+                log.white(pre(new Date) + "[USER] "+result[0].username+" logged out.")
+
                 r.db('coinpair').table('users').filter(r.row('id').eq(result[0].id)).update({token: newTokenObj}).
                 run(connection, function(err, result) {
                     if (err) throw err;
-                    console.log(JSON.stringify(result, null, 2));
-                    console.log("Changed")
                 });
               }
             })
@@ -426,13 +419,10 @@
       })
 
       socket.on('getPortfolioDetails', (data) => {
-          console.log(data.userID)
-
           // GET ALL PORTFOLIOS OF USER
           r.db('coinpair').table('portfolios').filter(r.row('fromUser').eq(data.userID))
           .run(connection, function(err, cursor) {
             cursor.toArray(function(err, result){
-              console.log(result[0])
               socket.emit('newPortfolioData', result[0])
             })
           })
@@ -472,12 +462,13 @@
                         "timestamp": moment().unix()
                       }).run(connection, function(err, result) {
                         if (err) throw err
-                        console.log(result)
 
                         socket.emit('requestInviteCallback', {
                           success: true,
                           errorMsg: ''
                         })
+
+                        log.white(pre(new Date) + "[INVITE] Invite requested by ["+mail+"]")
 
                       })
 
@@ -508,6 +499,121 @@
         }
 
       })
+
+      socket.on('addWatchlistEvent', (data) => {
+        let coinID = data.coinID
+        let userID = data.userID
+
+        // GET ALL PORTFOLIOS OF USER
+        r.db('coinpair').table('users').filter(r.row('id').eq(data.userID))
+        .run(connection, function(err, cursor) {
+          cursor.toArray(function(err, result){
+
+            let watchListOld = result[0].watchlist
+            if(watchListOld.indexOf(coinID) === -1){
+              watchListOld.push(coinID)
+
+              r.db('coinpair').table('users').filter(r.row('id').eq(userID)).update({watchlist: watchListOld}).
+              run(connection, function(err, result) {
+                  if (err) throw err;
+              })
+
+            }
+          })
+        })
+
+      })
+
+      socket.on('deleteWatchlistEvent', (data) => {
+        let coinID = data.coinID
+        let userID = data.userID
+
+        // GET ALL PORTFOLIOS OF USER
+        r.db('coinpair').table('users').filter(r.row('id').eq(data.userID))
+        .run(connection, function(err, cursor) {
+          cursor.toArray(function(err, result){
+
+            console.log(coinID)
+            console.log(userID)
+
+            let watchListOld = result[0].watchlist
+            let index = watchListOld.indexOf(coinID)
+
+            if(index > -1){
+              watchListOld.splice(index, 1)
+
+              r.db('coinpair').table('users').filter(r.row('id').eq(userID)).update({watchlist: watchListOld}).
+              run(connection, function(err, result) {
+                  if (err) throw err;
+              })
+
+            }
+          })
+        })
+
+      })
+
+      socket.on('getUpdateDetails', (data) =>{
+        /*
+          Create Object:
+            {
+              bugs: ['..','..'],
+              totalVotes,
+              features: [{
+              desc: '..',
+              votes: 0
+            }]
+            }
+        */
+
+        r.db('coinpair').table('featuresSoon')
+        .run(connection, function(err, cursor) {
+          cursor.toArray(function(err, result){
+
+            let totalVotes = 0
+            let object = {}
+
+            let featuresArray = []
+            let bugsArray = []
+
+            for (let i = 0; i < result.length; i++){
+              // go through all features
+              let desc = result[i].desc
+              let votes = 0
+
+              for (let x = 0; x < result[i].votes.length; x++){
+                // go through all Votes
+                votes++
+                totalVotes++
+              }
+
+              // Fill the featuresArray
+              let featureObject = {desc, votes}
+              featuresArray.push(featureObject)
+            }
+
+            r.db('coinpair').table('bugsPublic')
+            .run(connection, function(err, cursor) {
+              cursor.toArray(function(err, result){
+                for(let i = 0; i < result.length; i++){
+                  bugsArray.push(result[i].desc)
+                }
+
+                object = {
+                  bugs: bugsArray,
+                  features: featuresArray,
+                  totalVotes
+                }
+                socket.emit('updateDetailsCallback', object)
+
+              })
+            })
+
+          })
+        })
+
+      })
+
     })
 
     setInterval(() => {

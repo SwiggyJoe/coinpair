@@ -7,6 +7,7 @@
   import { push } from 'react-router-redux'
 
   import { mapStateToProps } from '../../reducers';
+  import Table from './Table'
 
   import { getPriceInPersonalCurrencyExact } from '../../scripts/convert.js'
 
@@ -41,7 +42,11 @@
 
       return (
         <div class="Watchlist">
-          Watchlist
+          <div class="header">
+            <h1>Watchlist</h1>
+            <h2>Your personal curated coin list.</h2>
+          </div>
+          <Table />
         </div>
       )
     }

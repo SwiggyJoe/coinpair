@@ -22,7 +22,8 @@ const USER_DEFAULT = {
   },
   token: "",
   userID: 0,
-  username: ""
+  username: "",
+  watchlist: [],
 }
 
 
@@ -46,6 +47,26 @@ const USER_DEFAULT = {
 
       case 'ADD_USER_DETAILS':
         return { ...state, user: action.payload }
+
+      case 'ADD_WATCHLIST':
+
+        let watchlistAdd = state.user.watchlist
+        watchlistAdd.push(action.payload)
+
+        let user = state.user
+        user.watchlist = watchlistAdd
+
+        return { ...state, user }
+
+      case 'DELETE_FROM_WATCHLIST':
+        let watchlistDel = state.user.watchlist
+        let index = watchlistDel.indexOf(action.payload)
+        watchlistDel.splice(index, 1)
+
+        let userDel = state.user
+        userDel.watchlist = watchlistDel
+
+        return { ...state, user: userDel }
     }
 
     return state

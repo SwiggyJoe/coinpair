@@ -25,6 +25,7 @@
    return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
   };
 
+  let timer;
 
   // Redux Store setup
   @connect((store) => {
@@ -44,12 +45,6 @@
         globalPositions: [],
       }
 
-      setInterval(() => {
-        this.setState({
-          calculated: false
-        })
-      }, 2000)
-
     }
 
     componentWillMount(){
@@ -64,6 +59,42 @@
 
       }
 
+  /*    if(this.state.globalPositions !== []){
+
+        let valueOfPortfolio  = 0
+        let buyValue          = 0
+
+        const globalPositions = this.state.globalPositions
+        for (let i = 0; i < globalPositions.length; i++){
+          let index         = coin.findIndex(x => x.id==globalPositions[i].coinID);
+          buyValue          += globalPositions[i].value * globalPositions[i].avgPrice
+          valueOfPortfolio  += (coin[index].price_usd*globalPositions[i].value)
+        }
+
+        let percent = ((100/buyValue) * valueOfPortfolio) - 100
+
+        this.setState({
+          worth: valueOfPortfolio,
+          percentChangeWorth: percent,
+          calculated: true,
+        })
+
+      }
+
+*/
+    }
+
+    componentDidMount(){
+      timer = setInterval(() => {
+        this.setState({
+          calculated: false
+        })
+      }, 2000)
+
+    }
+
+    componentWillUnmount(){
+      clearTimeout(timer)
     }
 
     componentDidUpdate(){
@@ -96,10 +127,6 @@
             } = this.props
 
       if(typeof portfolio.id !== "undefined" && !this.state.finishedGlobalPositions){
-
-        this.setState({
-          finishedGlobalPositions: true,
-        })
 
         console.log("YES")
 
@@ -162,45 +189,45 @@
             // COIN ALREADY FINISHED
           }
         }
-        console.log(globalPositions)
         this.setState({
+          finishedGlobalPositions: true,
           globalPositions
         })
 
       }
 
       // HERE CALCULATING
-      if(this.state.globalPositions !== [] && this.state.calculated == false){
-
-        let valueOfPortfolio  = 0
-        let buyValue          = 0
-
-
-
-        const globalPositions = this.state.globalPositions
-          console.log(this.state.globalPositions)
-            console.log(globalPositions)
-        for (let i = 0; i < globalPositions.length; i++){
-          let index         = coin.findIndex(x => x.id==globalPositions[i].coinID);
-          buyValue          += globalPositions[i].value * globalPositions[i].avgPrice
-          valueOfPortfolio  += (coin[index].price_usd*globalPositions[i].value)
-        }
-
-        let percent = ((100/buyValue) * valueOfPortfolio) - 100
-
-        this.setState({
-          worth: valueOfPortfolio,
-          percentChangeWorth: percent,
-          calculated: true,
-        })
-
-      }
       // END CALC
 
     }
 
     render() {
       const { config, coin, portfolio} = this.props
+
+      let valueOfPortfolio  = 0
+      let buyValue          = 0
+      let percent           = 0
+
+      if(this.state.globalPositions !== []){
+
+
+        const globalPositions = this.state.globalPositions
+        for (let i = 0; i < globalPositions.length; i++){
+          let index         = coin.findIndex(x => x.id==globalPositions[i].coinID);
+          buyValue          += globalPositions[i].value * globalPositions[i].avgPrice
+          valueOfPortfolio  += (coin[index].price_usd*globalPositions[i].value)
+        }
+
+        percent = ((100/buyValue) * valueOfPortfolio) - 100
+
+        /*this.setState({
+          worth: valueOfPortfolio,
+          percentChangeWorth: percent,
+          calculated: true,
+        })*/
+
+      }
+
 
       let listItems
 
@@ -239,10 +266,10 @@
             <div class="header-right">
               <h1>
                 <b><font>{this.props.config.currency_symbol}</font>
-                {getPriceInPersonalCurrencyExact(this.state.worth, config.currency)}</b>
+                {getPriceInPersonalCurrencyExact(valueOfPortfolio, config.currency)}</b>
               </h1>
-              <h2 style={Number(this.state.percentChangeWorth) > 0 ? {color: 'green'} : {color: 'red'}}>
-                {this.state.percentChangeWorth.formatMoney(2, '.', ',')}%
+              <h2 style={Number(percent) > 0 ? {color: 'green'} : {color: 'red'}}>
+                {percent.formatMoney(2, '.', ',')}%
               </h2>
             </div>
           </div>

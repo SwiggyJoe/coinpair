@@ -2,7 +2,6 @@
   const defaultState = {
     currency: "USD",
     currency_symbol: "$",
-    theme: "Light",
     coinTableSize: 50,
     layout: "FULL",
     theme: "LIGHT",

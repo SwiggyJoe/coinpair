@@ -74,4 +74,32 @@
 
     }
 
+    .grid-wrapper{
+      h4,h5{
+        margin: 0;
+        padding: 0;
+        font-family: $mainSans;
+        text-align: center;
+      }
+      h4{
+        margin: 0;
+        padding: 0;
+        font-size: 14px;
+        color: $grey700;
+        font-family: $mainSans;
+      }
+      h5{
+        margin: 0;
+        padding: 0;
+        font-size: 20px;
+        font-family: $mainSans;
+        font-weight: bold;
+        color: $dark;
+        margin-bottom: 10px;
+        font{
+          font-size: 14px;
+        }
+      }
+    }
+
   }

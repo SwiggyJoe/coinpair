@@ -11,6 +11,17 @@
 
   import { getPriceInPersonalCurrencyExact } from '../../scripts/convert.js'
 
+  Number.prototype.formatMoney = function(c, d, t){
+  var n = this,
+    c = isNaN(c = Math.abs(c)) ? 2 : c,
+    d = d == undefined ? "." : d,
+    t = t == undefined ? "," : t,
+    s = n < 0 ? "-" : "",
+    i = String(parseInt(n = Math.abs(Number(n) || 0).toFixed(c))),
+    j = (j = i.length) > 3 ? j % 3 : 0;
+   return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+  };
+
   // Redux Store setup
   @connect((store) => {
     return mapStateToProps(store)
@@ -21,7 +32,15 @@
       super(props)
       this.state = {
         dataRequested: false,
-        coinData: {}
+        coinData: {
+          'available_supply': 0,
+          'max_supply': 0,
+          '24h_volume_usd': 0,
+          'market_cap_usd': 0,
+          'percent_change_1h': 0,
+          'percent_change_24h': 0,
+          'percent_change_7d': 0
+        }
       }
     }
 
@@ -108,7 +127,69 @@
           <div class="splitter"></div>
 
 
+          <div class="content">
+            <div class="uk-container grid-wrapper">
+              <div class="uk-child-width-expand@s" data-uk-grid>
 
+                <div>
+                  <h4>Market Cap</h4>
+                  <h5><font>{config.currency_symbol}</font>{getPriceInPersonalCurrencyExact(this.state.coinData['market_cap_usd'], config.currency)}</h5>
+                </div>
+
+                <div>
+                  <h4>Volume 24h</h4>
+                  <h5><font>{config.currency_symbol}</font>{getPriceInPersonalCurrencyExact(this.state.coinData['24h_volume_usd'], config.currency)}</h5>
+                </div>
+
+                <div>
+                  <h4>Available Supply</h4>
+                  <h5>{Number(this.state.coinData['available_supply']).formatMoney(2,'.',',')}</h5>
+                </div>
+
+                <div>
+                  <h4>Max Supply</h4>
+                  <h5>{Number(this.state.coinData['max_supply']).formatMoney(2,'.',',')}</h5>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+
+          <div class="splitter"></div>
+
+          <div class="content">
+            <div class="uk-container grid-wrapper">
+
+              <div class="uk-child-width-expand@s" data-uk-grid>
+
+                <div>
+                  <h4>Percent Change 1h</h4>
+                  <h5
+                    style={Number(this.state.coinData['percent_change_1h']) > 0 ? {color: 'green'} : {color: 'red'}}>
+                      {Number(this.state.coinData['percent_change_1h']).formatMoney(2,'.',',')} %
+                  </h5>
+                </div>
+
+                <div>
+                  <h4>Percent Change 24h</h4>
+                  <h5
+                    style={Number(this.state.coinData['percent_change_24h']) > 0 ? {color: 'green'} : {color: 'red'}}>
+                      {Number(this.state.coinData['percent_change_24h']).formatMoney(2,'.',',')} %
+                  </h5>
+                </div>
+
+                <div>
+                  <h4>Percent Change 7d</h4>
+                  <h5
+                    style={Number(this.state.coinData['percent_change_7d']) > 0 ? {color: 'green'} : {color: 'red'}}>
+                      {Number(this.state.coinData['percent_change_7d']).formatMoney(2,'.',',')} %
+                  </h5>
+                </div>
+
+              </div>
+            </div>
+          </div>
 
         </div>
       )
