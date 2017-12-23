@@ -228,8 +228,9 @@ export default class ChartLayout extends React.Component {
       data: data,
       options: options,
       chartLoaded: false,
-      activeChart: props.chartInformation,
-      activeTimeframe: "",
+      activeChart: props.activeCoin,
+      activeCoin: props.activeCoin,
+      activeTimeframe: "DAY",
     };
 
     socket = this.props.socketProp;
@@ -251,19 +252,18 @@ export default class ChartLayout extends React.Component {
 
   }
 
-  componentWillReceiveProps(nextProps) {
+  /*componentWillReceiveProps(nextProps) {
 
     if (nextProps.chartInformation != this.state.activeChart) {
       this.setState({
         activeChart: nextProps.chartInformation,
         chartLoaded: false,
-        activeTimeframe: 'month',
       }, function () {
         if(this.state.acitveChart != -1){
           socket.emit('getChartData',
             {
-              activeChart: this.state.activeChart,
-              timeframe: 'month',
+              coinID: this.props.activeCoin,
+              timeframe: this.state.activeTimeframe,
             }
           );
         }
@@ -272,17 +272,16 @@ export default class ChartLayout extends React.Component {
     }
 
     this.changeTime = this.changeTime.bind(this);
-}
+}*/
 
   componentDidMount() {
-
+    document.getElementsByTagName('html')[0].scrollTop = 0;
   }
 
   changeTime(time){
-    console.log(time);
-    socket.emit('getChartData',
+    socket.emit('getCoinDetails',
       {
-        activeChart: this.state.activeChart,
+        coinID: this.props.activeCoin,
         timeframe: time,
       }
     );
@@ -295,37 +294,40 @@ export default class ChartLayout extends React.Component {
     return (
       <div>
         <div class="roomx">
-        <h1 style={this.state.chartLoaded ? {display: 'none'} : {}}>Loading Chart..</h1>
-
+        <center>
+          <h1 style={this.state.chartLoaded ? {display: 'none'} : {}}>Loading Chart..</h1>
         <div class="uk-margin-small" style={this.state.chartLoaded ? {} : {display: 'none'}}>
           <div class="uk-button-group">
-              <button
-                  className={this.state.activeTimeframe == 'hour' ? 'uk-button uk-button-small uk-button-primary' : 'uk-button uk-button-small uk-button-secondary'}
-                  onClick={() => this.changeTime("hour")}>
-                  Last Hour
-                  </button>
 
               <button
-                  className={this.state.activeTimeframe == 'day' ? 'uk-button uk-button-small uk-button-primary' : 'uk-button uk-button-small uk-button-secondary'}
-                  onClick={() => this.changeTime("day")}>
+                  className={this.state.activeTimeframe == 'DAY' ? 'uk-button uk-button-small uk-button-primary' : 'uk-button uk-button-small uk-button-secondary'}
+                  onClick={() => this.changeTime("DAY")}>
                   Last Day
                   </button>
 
               <button
-                  className={this.state.activeTimeframe == 'month' ? 'uk-button uk-button-small uk-button-primary' : 'uk-button uk-button-small uk-button-secondary'}
-                  onClick={() => this.changeTime("month")}>
+                  className={this.state.activeTimeframe == 'WEEK' ? 'uk-button uk-button-small uk-button-primary' : 'uk-button uk-button-small uk-button-secondary'}
+                  onClick={() => this.changeTime("WEEK")}>
+                  Last Week
+                  </button>
+
+              <button
+                  className={this.state.activeTimeframe == 'MONTH' ? 'uk-button uk-button-small uk-button-primary' : 'uk-button uk-button-small uk-button-secondary'}
+                  onClick={() => this.changeTime("MONTH")}>
                   Last Month
                   </button>
 
               <button
-                  className={this.state.activeTimeframe == 'year' ? 'uk-button uk-button-small uk-button-primary' : 'uk-button uk-button-small uk-button-secondary'}
-                  onClick={() => this.changeTime("year")}>
+                  className={this.state.activeTimeframe == 'YEAR' ? 'uk-button uk-button-small uk-button-primary' : 'uk-button uk-button-small uk-button-secondary'}
+                  onClick={() => this.changeTime("YEAR")}>
                   Last Year
                   </button>
           </div>
         </div>
-
-        <canvas style={this.state.chartLoaded ? {} : {display: 'none'}} id="myChart"></canvas>
+        </center>
+          <div class="chart-wrapper">
+            <canvas style={this.state.chartLoaded ? {} : {display: 'none'}} id="myChart"></canvas>
+          </div>
         </div>
       </div>
     );

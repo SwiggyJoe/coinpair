@@ -118,6 +118,16 @@
       });
   }
 
+  function makeid(length) {
+  var text = "";
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+  for (var i = 0; i < length; i++)
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+  return text;
+}
+
 
   function initialize_server(){
 
@@ -141,7 +151,8 @@
         socket.emit("newConnSimpleCoinData", newCoinData)
 
         socket.on('getCoinDetails', (data) => {
-          server.getChartData(data.coinID).then((dataChart) => {
+          console.log(data)
+          server.getChartData(data.coinID, data.timeframe).then((dataChart) => {
             socket.emit('callbackChart', dataChart)
           })
 
@@ -371,7 +382,7 @@
                 // TOKEN LEGIT SEND THAT TO USER
                 let userObject = result[0]
                   userObject.password = "no"
-                  allUserObject.token = []
+                  userObject.token = []
 
                 socket.emit('isTokenLegitCallback', {
                   isLegit: true,
@@ -682,6 +693,86 @@
           if (err) throw err
           socket.emit('requestFeatureCallback', {success: true})
         })
+
+      })
+
+      socket.on('buyPortfolioEvent', (data) => {
+        let { coinID, price, amount, buyWith,
+        desc, priceInTotal, date, userID, token, btcPriceUsd} = data
+
+        if(priceInTotal){
+          price = price / amount
+        }
+
+        r.db('coinpair').table('users').
+        filter(
+          function(doc) {
+              return doc("token").contains(function(tokenInside) {
+                  return tokenInside("token").eq(token)
+              })
+          }
+        ).
+        run(connection, function(err, cursor) {
+            cursor.toArray(function (err, result){
+              if(result.length > 0 && result.length < 2){
+                // legit token
+                // get portfolio details
+                r.db('coinpair').table('portfolios').
+                filter(r.row('fromUser').eq(userID)).
+                run(connection, (err, cursor) => {
+                  if (err) log.red(err)
+                  cursor.toArray((err, result) => {
+                    // portoflio got
+                    let portfolio = result[0]
+                    let oldPositions = portfolio.positions
+                    let currencyUsdWorth = 1
+
+                    if(buyWith === "BTC"){
+                      currencyUsdWorth = btcPriceUsd
+                    }
+
+                    let newPosition = {
+                      "addedTimestamp": moment().unix(),
+                      "buyPrice": price,
+                      "buyTime": moment(date).unix(),
+                      "buyWith": buyWith,
+                      "coinID": coinID,
+                      "currencyUsdWorth": currencyUsdWorth,
+                      "desc": desc,
+                      "exchange": "",
+                      "originalValue": Number(amount),
+                      "positionID": makeid(15),
+                      "sells": [
+                      ]
+                    }
+
+                    oldPositions.push(newPosition)
+
+                    r.db('coinpair').table('portfolios').
+                    filter(r.row('fromUser').eq(userID)).update({positions: oldPositions}).
+                    run(connection, function(err, result) {
+                      if (err) reject(err)
+
+                      socket.emit('buyPortfolioCallback', {success: true, userID})
+
+                    })
+
+                  })
+                })
+
+              /*  r.db('coinpair').table('portfolios').
+                filter(r.row(row).eq(eq)).update(obj).
+                run(this.db.connection, function(err, result) {
+                  if (err) log(err)
+                })*/
+
+
+              }
+              else{
+                log.bright.red("Wrong token tried manipulating portfolio data.")
+              }
+            })
+          })
 
       })
 

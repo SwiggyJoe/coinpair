@@ -28,23 +28,6 @@
         socketSetup: false,
       }
     }
-    componentWillUpdate(){
-      const { socket }    = this.props.socket
-      if(typeof socket !== "undefined" && true){
-
-      }
-    }
-
-    componentWillMount(){
-      const { socket }  = this.props.socket
-
-      if(typeof socket !== "undefined" && !this.state.dataRequested && this.props.auth.user.id !== ""){
-        this.setState({
-          dataRequested: true,
-        })
-        socket.emit('getUpdateDetails',{userID: this.props.auth.user.id})
-      }
-    }
     componentDidUpdate(){
       const { socket }  = this.props.socket
       if(typeof socket !== "undefined" && !this.state.dataRequested && this.props.auth.user.id !== ""){
@@ -93,6 +76,59 @@
 
 
       }
+
+    }
+
+    componentWillMount(){
+      const { socket }  = this.props.socket
+
+      if(typeof socket !== "undefined" && !this.state.dataRequested && this.props.auth.user.id !== ""){
+
+        this.setState({dataRequested: true})
+        socket.emit('getUpdateDetails', {userID: this.props.auth.user.id})
+      }
+
+      if(typeof socket !== "undefined" && !this.state.socketSetup){
+        this.setState({socketSetup: true})
+
+        socket.on('updateDetailsCallback', (data) => {
+
+          let features = data.features
+          features.sort((a,b) => {
+            return a.votes < b.votes ? true : false
+          })
+
+          this.setState({
+            bugs: data.bugs,
+            features: features,
+            totalVotes: data.totalVotes,
+            leftVotes: data.leftVotes
+          })
+        })
+
+        socket.on('reportBugCallback', (data) => {
+          if(data.success){
+            UIkit.modal(document.getElementById("report-bug-modal")).hide();
+            UIkit.notification({message: 'Thank you!', status: 'success'})
+            this.setState({bugInput: "", bugReportLoading: false})
+          }else{
+            UIkit.notification({message: 'Something went wrong', status: 'danger'})
+          }
+        })
+
+        socket.on('requestFeatureCallback', (data) => {
+          if(data.success){
+            UIkit.modal(document.getElementById("request-feature")).hide();
+            UIkit.notification({message: 'Thank you!', status: 'success'})
+            this.setState({featureInput: "", featureRequestLoading: false})
+          }else{
+            UIkit.notification({message: 'Something went wrong', status: 'danger'})
+          }
+        })
+
+
+      }
+
     }
 
     handleVote(index){

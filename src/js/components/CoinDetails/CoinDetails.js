@@ -33,6 +33,7 @@
       this.state = {
         dataRequested: false,
         coinData: {
+          'id': '',
           'available_supply': 0,
           'max_supply': 0,
           '24h_volume_usd': 0,
@@ -43,15 +44,20 @@
         }
       }
     }
+    componentDidMount () {
+        window.scrollTo(0, 0)
+      }
 
     componentWillMount(){
 
       const { socket }  = this.props.socket
       const { coin }    = this.props
 
+
+
       if(typeof socket !== "undefined" && !this.state.dataRequested){
 
-        socket.emit('getCoinDetails', {coinID: this.props.match.params.coinID})
+        socket.emit('getCoinDetails', {coinID: this.props.match.params.coinID, timeframe: 'DAY'})
         this.setState({dataRequested: true})
 
         let index = coin.findIndex(x => x.id==this.props.match.params.coinID);
@@ -75,7 +81,7 @@
       const { coin }    = this.props
 
       if(typeof socket !== "undefined" && !this.state.dataRequested){
-        socket.emit('getCoinDetails', {coinID: this.props.match.params.coinID})
+        socket.emit('getCoinDetails', {coinID: this.props.match.params.coinID, timeframe: 'DAY'})
         this.setState({dataRequested: true})
       }
 
@@ -189,6 +195,17 @@
 
               </div>
             </div>
+          </div>
+
+          <div class="uk-container">
+            {(() => {
+                if(socket.connected){
+                  return (<Chart activeCoin={this.state.coinData.id} socketProp={socket.socket} />)
+                }
+                else{
+                  return(<div>Loading Chart..</div>)
+                }
+            })()}
           </div>
 
         </div>
