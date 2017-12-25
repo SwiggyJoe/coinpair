@@ -216,7 +216,7 @@
       }
 
       _loadCoinData(){
-          this._loadCMCcoins(500, "USD").then((result) => {
+          this._loadCMCcoins(1375, "USD").then((result) => {
             this.coinDataSimple = result
           })
       }

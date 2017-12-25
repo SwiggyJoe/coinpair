@@ -66,7 +66,6 @@
           let coinData = coin[index]
 
           if(this.state.coinData != coinData){
-            console.log(coinData.price_usd)
             this.setState({ coinData })
           }
 

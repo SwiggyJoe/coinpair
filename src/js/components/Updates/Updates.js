@@ -225,22 +225,7 @@
             <h2>Version 0.1.0</h2>
           </div>
 
-          <div class="about uk-container">
-            <h2>About Us.</h2>
-            <p>
-              Out goals may be high, but we will and do work hard to achieve them.
-              We try to offer the best go-to page for cryptocurrencies in the world.
-              First we want to start with the service you can currently use like
-              the coin overview coins or to see your net worth grow with our portfolio tool.
-              <br/>
-              But this is only the beginning. We have many plans from implementing community features
-              to offering top notch analysis on coins.
-              <br/>
-              In order to do this, we want to grow steadily and increase our offerings one by one.
-              We do not rush in things, we build something, make it awesome and then move to the
-              next feature.
-            </p>
-          </div>
+
 
           <div class="current-status uk-container">
             <h2>BE AWARE!</h2>
@@ -380,3 +365,20 @@
       )
     }
   }
+
+  /*<div class="about uk-container">
+    <h2>About Us.</h2>
+    <p>
+      Out goals may be high, but we will and do work hard to achieve them.
+      We try to offer the best go-to page for cryptocurrencies in the world.
+      First we want to start with the service you can currently use like
+      the coin overview coins or to see your net worth grow with our portfolio tool.
+      <br/>
+      But this is only the beginning. We have many plans from implementing community features
+      to offering top notch analysis on coins.
+      <br/>
+      In order to do this, we want to grow steadily and increase our offerings one by one.
+      We do not rush in things, we build something, make it awesome and then move to the
+      next feature.
+    </p>
+  </div>*/

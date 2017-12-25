@@ -50,6 +50,17 @@
         socketSetup: false,
         newPortfolioData: false,
 
+        focusPosition: "",
+        fPI: {
+          coinID: "",
+          coinName: "",
+          totalBuyWorth: 0,
+          totalNowWorth: 0,
+          amount: 0,
+          gainAbsolute: 0,
+          gainRelative: 0,
+        },
+
         coinSelectedBuy: "",
         buyWith: "USD",
         buyPrice: 0,
@@ -75,7 +86,6 @@
         this.setState({dataRequested: true})
 
       }
-
   /*    if(this.state.globalPositions !== []){
 
         let valueOfPortfolio  = 0
@@ -124,11 +134,9 @@
 
 
     }
-
     componentWillUnmount(){
       clearTimeout(timer)
     }
-
     componentDidUpdate(){
       const { socket }        = this.props.socket
       const { coin, auth, portfolio }    = this.props
@@ -150,12 +158,6 @@
 
       }
     }
-
-    handleAssetClick(e, i){
-      let clickedAsset = e
-
-    }
-
     componentWillUpdate(){
 
       const { socket }        = this.props.socket
@@ -275,6 +277,75 @@
 
     }
 
+    handleAssetClick(coinID, e){
+      const { portfolio, coin } = this.props
+
+      if(typeof portfolio.id !== "undefined" ){
+
+        let index       = coin.findIndex(x => x.id == coinID)
+        let coinDetails = coin[index]
+
+        let allPositionsOfCoin = portfolio.positions.filter((obj) => {
+          return obj.coinID == coinDetails.id ?  true : false
+        })
+
+        let totalBuyWorth = 0
+        let totalNowWorth = 0
+        let avgPrice      = 0
+        let amount        = 0
+        let gainAbsolute  = 0
+        let gainRelative  = 0
+
+        let value = 0
+
+        for (let x = 0; x < allPositionsOfCoin.length; x++){
+
+          let position = allPositionsOfCoin[x]
+          let sellsOfPosition = position.sells
+
+          let originalValue = position.originalValue
+          let currentValue  = originalValue
+
+          let buyPrice = position.buyPrice
+
+          if(position.buyWith !== "USD"){
+            buyPrice = buyPrice * position.currencyUsdWorth
+          }
+
+          for(let y = 0; y < sellsOfPosition.length; y++){
+            currentValue -= sellsOfPosition[y].value
+          }
+
+          avgPrice == 0 ? avgPrice = buyPrice
+          : avgPrice = (avgPrice*amount+currentValue*buyPrice)/(amount+currentValue)
+
+          amount += currentValue
+        }
+
+        totalBuyWorth = amount * avgPrice
+        totalNowWorth = amount * coinDetails.price_usd
+
+        gainRelative = 100/avgPrice*coinDetails.price_usd - 100
+        gainAbsolute = (coinDetails.price_usd-avgPrice)*amount
+
+        UIkit.modal(document.getElementById("position-modal")).show();
+
+        this.setState({
+            focusPosition: coinID,
+            fPI: {
+              coinID,
+              coinName: coinDetails.name,
+              totalBuyWorth,
+              totalNowWorth,
+              amount,
+              gainAbsolute,
+              gainRelative,
+            }
+        })
+
+      }
+    }
+
     handleCoinSelect(selected){
       this.setState({ coinSelectedBuy: selected })
     }
@@ -294,15 +365,12 @@
       let state = e.target.value === "unit" ? false : true
       this.setState({buyPriceTotal: state})
     }
-
     handleBuyError(msg){
       UIkit.notification({message: msg, status: 'danger'})
     }
-
     handleBuyDate(value){
       this.setState({buyDate: value})
     }
-
     handleBuy(){
       const { socket }  = this.props.socket
       const { auth, coin }    = this.props
@@ -371,6 +439,9 @@
         let index = coin.findIndex(x => x.id==asset.coinID)
         let coinDetails = coin[index]
 
+        let coinPercentGain = 100/asset.avgPrice*coinDetails.price_usd - 100
+        let coinAbsoluteGain = (coinDetails.price_usd-asset.avgPrice)*asset.value
+
         return (
           <li key={asset.coinID} onClick={this.handleAssetClick.bind(this, asset.coinID)}>
             <img src={"https://files.coinmarketcap.com/static/img/coins/32x32/"+asset.coinID+".png"}/>
@@ -384,14 +455,14 @@
               {getPriceInPersonalCurrencyExact(coinDetails.price_usd, config.currency)}
             </h3>
 
-            <div class="asset-gain">
+            <div class="asset-own">
               <h3><b>{asset.value} {coinDetails.symbol}</b></h3>
               <h2>@ <font>{config.currency_symbol}</font>{getPriceInPersonalCurrencyExact(asset.avgPrice, config.currency)}</h2>
             </div>
 
-            <div class="asset-own">
-              <h3><b>{asset.value} {coinDetails.symbol}</b></h3>
-              <h2>@ <font>{config.currency_symbol}</font>{getPriceInPersonalCurrencyExact(asset.avgPrice, config.currency)}</h2>
+            <div class="asset-gain">
+              <h3 style={coinPercentGain < 0 ? {color: "red"} : {color: "green"}}><b>{coinPercentGain.formatMoney(2,',','.')}%</b></h3>
+              <h2 style={coinAbsoluteGain < 0 ? {color: "red"} : {color: "green"}}><font>{config.currency_symbol}</font>{getPriceInPersonalCurrencyExact(coinAbsoluteGain, config.currency)}</h2>
             </div>
 
           </li>
@@ -424,7 +495,9 @@
 
           <div class="uk-container content">
             <div class="uk-child-width-1-2" data-uk-grid>
-              <div class=""></div>
+              <div class="">
+                <p>Portfolio is currently under development.</p>
+              </div>
 
               <div class="assets">
 
@@ -437,7 +510,7 @@
 
                   <div class="title">
                     <h2>Assets</h2>
-                    <h3>Click on an asset to expand</h3>
+                    <h3>Click on an asset to show details or sell.</h3>
                   </div>
 
                   <div class="add-asset">
@@ -483,7 +556,158 @@
                           </div>
 
                           <div class="uk-width-1-4@s">
+                            <label class="uk-form-label" for="form-stacked-text">Amount</label>
+                            <div class="uk-form-controls">
+                              <input
+                                class="uk-input"
+                                id="form-stacked-text"
+                                type="text"
+                                placeholder="Eg: 1.32"
+                                value={this.state.buyAmount === 0 ? "" : this.state.buyAmount}
+                                onChange={this.handleBuyAmount.bind(this)}
+                                />
+                            </div>
+                          </div>
+
+                          <div class="uk-width-1-4@s">
                             <label class="uk-form-label" for="form-stacked-text">Buy Price</label>
+                            <div class="uk-form-controls">
+                              <input
+                                class="uk-input"
+                                id="form-stacked-text"
+                                type="text"
+                                placeholder="Eg: 16439"
+                                value={this.state.buyPrice === 0 ? "" : this.state.buyPrice}
+                                onChange={this.handleBuyPrice.bind(this)}
+                                />
+                            </div>
+                          </div>
+
+                          <div class="uk-width-1-4@s">
+                            <label class="uk-form-label" for="form-stacked-text">Bought With</label>
+                            <div class="uk-form-controls">
+                              <select
+                                class="uk-select"
+                                id="form-horizontal-select"
+                                value={this.state.buyWith}
+                                onChange={this.handleBuyWith.bind(this)} value={this.state.buyWith}
+                                >
+                                <option value="USD">USD</option>
+                                <option value="BTC">BTC</option>
+                              </select>
+                            </div>
+                          </div>
+
+                          <div class="uk-width-1-4@s">
+                            <label class="uk-form-label" for="form-stacked-text">Price Type</label>
+                            <div class="uk-form-controls">
+                              <select
+                                class="uk-select"
+                                id="form-horizontal-select"
+                                value={this.state.buyPriceTotal ? "Total Value1" : "Per Unit1"}
+                                onChange={this.handleBuyPriceTotal.bind(this)}
+                                >
+                                <option value="unit">Per Unit</option>
+                                <option value="total">Total Value</option>
+                              </select>
+                            </div>
+                          </div>
+
+                          <div class="uk-width-1-2@s">
+                            <label class="uk-form-label" for="form-stacked-text">Description</label>
+                            <div class="uk-form-controls">
+                              <input
+                                class="uk-input"
+                                id="form-stacked-text"
+                                type="text"
+                                placeholder="Optional description of this buy.."
+                                value={this.state.buyDesc}
+                                onChange={this.handleBuyDescription.bind(this)}
+                                />
+                            </div>
+                          </div>
+
+                          <div class="uk-width-1-2@s">
+                            <label class="uk-form-label" for="form-stacked-text">Buy Date</label>
+                            <div class="uk-form-controls">
+                            <DatePicker
+                                className="uk-input"
+                                selected={this.state.buyDate}
+                                onChange={this.handleBuyDate.bind(this)}
+                            />
+                            </div>
+
+                          </div>
+
+                      </form>
+
+                       </div>
+                  </div>
+                  <div class="uk-modal-footer uk-text-right">
+                      <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
+                      <button
+                        type="button"
+                        className={"uk-button uk-button-primary"}
+                        onClick={this.handleBuy.bind(this)}
+                        >
+                          Save Buy
+                        </button>
+                  </div>
+              </div>
+          </div>
+
+          <div id="position-modal" data-uk-modal>
+              <div class="uk-modal-dialog">
+                  <button class="uk-modal-close-default" type="button" data-uk-close></button>
+                  <div class="uk-modal-header">
+                      <h2 class="uk-modal-title">Overview of {this.state.fPI.coinName}</h2>
+                  </div>
+                  <div class="uk-modal-body">
+                    <div class="uk-margin statistics">
+                      <h3>Statistics</h3>
+
+                      <div class="uk-grid-small" data-uk-grid>
+                        <div class="uk-width-1-3@s">
+                          <h4 class="labelh4port">Worth at buy-time</h4>
+                          <h5 class="labelh5port">
+                            <font>{this.props.config.currency_symbol}</font>
+                            {getPriceInPersonalCurrencyExact(this.state.fPI.totalBuyWorth, config.currency)}
+                          </h5>
+                        </div>
+
+                        <div class="uk-width-1-3@s">
+                          <h4 class="labelh4port">Worth now</h4>
+                          <h5 class="labelh5port">
+                            <font>{this.props.config.currency_symbol}</font>
+                            {getPriceInPersonalCurrencyExact(this.state.fPI.totalNowWorth, config.currency)}
+                          </h5>
+                        </div>
+
+                        <div class="uk-width-1-3@s">
+                          <h4 class="labelh4port">Amount</h4>
+                          <h5 class="labelh5port">{getPriceInPersonalCurrencyExact(this.state.fPI.amount, config.currency)}</h5>
+                        </div>
+
+                        <div class="uk-width-1-2@s">
+                          <h4 class="labelh4port">Total gain in percent</h4>
+                          <h5 class="labelh5port">{getPriceInPersonalCurrencyExact(this.state.fPI.gainRelative, config.currency)}%</h5>
+                        </div>
+                        <div class="uk-width-1-2@s">
+                          <h4 class="labelh4port">Total gain in <font>{this.props.config.currency_symbol}</font></h4>
+                          <h5 class="labelh5port">
+                            <font>{this.props.config.currency_symbol}</font>
+                            {getPriceInPersonalCurrencyExact(this.state.fPI.gainAbsolute, config.currency)}
+                          </h5>
+                        </div>
+
+                      </div>
+                      <hr/>
+
+                      <h3>Sell {this.state.fPI.coinName}</h3>
+                      <form class="uk-grid-small" data-uk-grid>
+
+                          <div class="uk-width-1-4@s">
+                            <label class="uk-form-label" for="form-stacked-text">Sell Price</label>
                             <div class="uk-form-controls">
                               <input
                                 class="uk-input"
@@ -509,7 +733,7 @@
                           </div>
 
                           <div class="uk-width-1-4@s">
-                            <label class="uk-form-label" for="form-stacked-text">Bought With</label>
+                            <label class="uk-form-label" for="form-stacked-text">Sold With</label>
                             <div class="uk-form-controls">
                               <select
                                 class="uk-select"
@@ -543,14 +767,14 @@
                                 class="uk-input"
                                 id="form-stacked-text"
                                 type="text"
-                                placeholder="Optional description of this buy.."
+                                placeholder="Optional description of this sell.."
                                 onChange={this.handleBuyDescription.bind(this)}
                                 />
                             </div>
                           </div>
 
                           <div class="uk-width-1-2@s">
-                            <label class="uk-form-label" for="form-stacked-text">Buy Date</label>
+                            <label class="uk-form-label" for="form-stacked-text">Sell Date</label>
                             <div class="uk-form-controls">
                             <DatePicker
                                 className="uk-input"
@@ -563,16 +787,16 @@
 
                       </form>
 
-                       </div>
+
+                     </div>
                   </div>
                   <div class="uk-modal-footer uk-text-right">
                       <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
                       <button
                         type="button"
                         className={"uk-button uk-button-primary"}
-                        onClick={this.handleBuy.bind(this)}
                         >
-                          Save Buy
+                          Save Sell
                         </button>
                   </div>
               </div>

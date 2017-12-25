@@ -57,7 +57,7 @@
 
   log.bright.cyan(pre(new Date)+"[SERVER] Start connecting with Database..")
 
-  r.connect( {host: 'localhost', port: 28015}, function(err, conn) {
+  r.connect( {host: '138.197.39.136', port: 28015}, function(err, conn) {
       if (err) throw err
       connection = conn
 

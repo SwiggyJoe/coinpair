@@ -79,7 +79,7 @@
 
               <li className={this.isActiveTheme("DARK")}>
                 <a href="#" onClick={() => {this.changeTheme("DARK")}}>
-                  Dark <i class="fa fa-moon-o"></i>
+                  Dark <i class="fa fa-moon-o"></i> <br/>(Under Development)
                 </a>
               </li>
 

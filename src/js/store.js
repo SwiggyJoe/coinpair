@@ -12,6 +12,8 @@ import createHistory from 'history/createBrowserHistory'
 
 export const history = createHistory()
 
-const middleware = applyMiddleware(routerMiddleware(history), promise(), thunk, logger, )
+const middleware = applyMiddleware(routerMiddleware(history), promise(),  )
 
 export const store = createStore(reducers, middleware)
+
+/* thunk, logger, */

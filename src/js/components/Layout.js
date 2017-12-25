@@ -24,7 +24,7 @@
 
 
   //SCSS Declaration
-  const widthMobile = 900
+  const widthMobile = 0
 
   // Socket IO
   //const socket = require('socket.io-client')('http://192.168.2.102:8000')

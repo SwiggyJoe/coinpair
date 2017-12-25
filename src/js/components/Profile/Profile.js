@@ -41,8 +41,9 @@
             </div>
           </div>
 
-
+          <center>
           <button onClick={this.handleLogout.bind(this)}>Logout</button>
+          </center>
         </div>
       )
     }

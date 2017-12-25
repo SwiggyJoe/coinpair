@@ -34,6 +34,12 @@ var n = this,
         else if (result < 1){
           result = result.formatMoney(5,',','.')
         }
+        else if (result < -1) {
+          result = result.formatMoney(2,',','.')
+        }
+        else if (result < -10000) {
+          result = result.formatMoney(0,',','.')
+        }
 
         return result
     }
@@ -45,12 +51,17 @@ var n = this,
 
       let result = exchangeCurrency(val, currency)
 
-        if (result < 1){
-          result = result.formatMoney(5,',','.')
-        }
-        else{
+        if(result < -1){
           result = result.formatMoney(2,',','.')
         }
+        else if (result < 1){
+          result = result.formatMoney(5,',','.')
+        }
+        else if(result >= 1){
+          result = result.formatMoney(2,',','.')
+        }
+
+
 
         return result
     }

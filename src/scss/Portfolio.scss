@@ -146,7 +146,7 @@
             }
             .asset-own{
               position: relative;
-
+              min-width: 90px;
               top: -6px;
               float: right;
               text-align: right;
@@ -160,8 +160,8 @@
             .asset-gain{
               position: relative;
               margin-right: 15px;
-              top: -6px;
               float: right;
+              top: -6px;
               text-align: right;
               h3{
                 font-size: 14px;
@@ -198,4 +198,32 @@
       }
     }
 
+    .statistics{
+      h4,h5{
+        padding: 0;
+        margin: 0;
+        color: $black;
+      }
+      h4{
+        font-size: 14px;
+        font-weight: bold;
+      }
+      h5{
+        font-size: 18px;
+      }
+    }
+  }
+
+  .labelh4port{
+    padding: 0;
+    margin: 0;
+    color: $black;
+    font-size: 14px;
+    font-weight: bold;
+  }
+  .labelh5port{
+    padding: 0;
+    margin: 0;
+    color: $black;
+    font-size: 18px;
   }

@@ -235,7 +235,6 @@ export default class ChartLayout extends React.Component {
 
     socket = this.props.socketProp;
     socket.on('callbackChart', (dataSocket) => {
-      console.log(dataSocket)
     this.setState({
       chartLoaded: true,
       data: dataSocket.data,
